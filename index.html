@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>FLVR404 — Drop_01</title>
   <style>
     body {
@@ -16,17 +16,6 @@
       overflow: hidden;
     }
 
-    .frame {
-      border: 1px solid #00ff99;
-      padding: 40px 30px;
-      box-shadow: 0 0 20px #00ff99aa;
-      background-color: rgba(0, 255, 153, 0.03);
-      text-align: center;
-      width: 90%;
-      max-width: 500px;
-      position: relative;
-    }
-
     /* SCANLINE OVERLAY */
     body::after {
       content: '';
@@ -39,39 +28,59 @@
       z-index: 999;
     }
 
-    /* LOGO CLEAN + GLITCH EFFECT */
+    .frame {
+      border: 1px solid #00ff99;
+      padding: 40px 30px;
+      box-shadow: 0 0 20px #00ff99aa;
+      background-color: rgba(0, 255, 153, 0.03);
+      text-align: center;
+      width: 90%;
+      max-width: 420px;
+      position: relative;
+    }
+
+    /* GLITCH LOGO DOUBLE */
     .glitch-logo-wrapper {
       position: relative;
-      width: 150px;
+      width: 100px;
       margin: 0 auto 20px;
     }
     .glitch-logo {
       width: 100%;
       display: block;
-      animation: logo-glitch 1.5s infinite;
     }
-    @keyframes logo-glitch {
-      0% { transform: translate(0); opacity: 1; }
-      20% { transform: translate(-1px, 1px); opacity: 0.9; }
-      40% { transform: translate(1px, -1px); opacity: 0.95; }
-      60% { transform: translate(-1px, 0); opacity: 0.85; }
-      80% { transform: translate(0, 1px); opacity: 0.92; }
-      100% { transform: translate(0); opacity: 1; }
+    .glitch-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      animation: glitch-rgb 1s infinite;
+      opacity: 0.7;
+      mix-blend-mode: screen;
+    }
+
+    @keyframes glitch-rgb {
+      0%   { transform: translate(0);       filter: hue-rotate(0deg);    opacity: 0.2; }
+      25%  { transform: translate(-2px, 1px); filter: hue-rotate(90deg);   opacity: 0.4; }
+      50%  { transform: translate(2px, -1px); filter: hue-rotate(180deg);  opacity: 0.6; }
+      75%  { transform: translate(-1px, 2px); filter: hue-rotate(270deg);  opacity: 0.3; }
+      100% { transform: translate(0);       filter: hue-rotate(0deg);    opacity: 0.2; }
     }
 
     h1 {
-      font-size: 2.5rem;
+      font-size: 2rem;
       margin-bottom: 10px;
       animation: glitch-text 1s infinite;
     }
+
     @keyframes glitch-text {
-      0% { text-shadow: 2px 0 red; }
-      50% { text-shadow: -2px 0 blue; }
+      0%   { text-shadow: 2px 0 red; }
+      50%  { text-shadow: -2px 0 blue; }
       100% { text-shadow: 2px 0 red; }
     }
 
     .subtitle {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       color: #00ff99;
       opacity: 0.4;
       margin-bottom: 30px;
@@ -102,6 +111,7 @@
       text-decoration: none;
       transition: opacity 0.3s ease;
     }
+
     .void-link:hover {
       opacity: 0.6;
     }
@@ -110,7 +120,8 @@
 <body>
   <div class="frame">
     <div class="glitch-logo-wrapper">
-      <img src="flvr404-logo.png" alt="FLVR404 Logo" class="glitch-logo" />
+      <img src="flvr404-logo.png" class="glitch-logo" alt="FLVR404 Logo" />
+      <img src="flvr404-logo.png" class="glitch-logo glitch-overlay" alt="FLVR404 Glitch Overlay" />
     </div>
 
     <h1>DROP_01 : SYSTEM BREACH</h1>
