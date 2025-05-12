@@ -17,11 +17,22 @@
       overflow: hidden;
     }
 
-    /* LOGO GLITCH START */
+    /* SCANLINE OVERLAY */
+    body::after {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background-image: repeating-linear-gradient(
+        to bottom, rgba(0,255,153,0.03), rgba(0,255,153,0.03) 1px, transparent 2px
+      );
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    /* GLITCH LOGO */
     .glitch-logo-wrapper {
       position: relative;
       width: 150px;
-      height: auto;
       margin-bottom: 20px;
     }
     .glitch-logo {
@@ -43,17 +54,30 @@
       75% { transform: translate(-1px, 1px); opacity: 0.4; filter: hue-rotate(270deg); }
       100% { transform: translate(0); opacity: 0.2; filter: hue-rotate(0deg); }
     }
-    /* LOGO GLITCH END */
 
     h1 {
       font-size: 2.5rem;
-      margin-bottom: 20px;
+      margin-bottom: 10px;
       animation: glitch-text 1s infinite;
     }
+    @keyframes glitch-text {
+      0% { text-shadow: 2px 0 red; }
+      50% { text-shadow: -2px 0 blue; }
+      100% { text-shadow: 2px 0 red; }
+    }
+
+    .subtitle {
+      font-size: 0.8rem;
+      color: #00ff99;
+      opacity: 0.4;
+      margin-bottom: 30px;
+    }
+
     .countdown {
       font-size: 1.2rem;
       margin-bottom: 40px;
     }
+
     button {
       padding: 10px 20px;
       font-size: 1rem;
@@ -63,22 +87,40 @@
       border: 1px solid #00ff99;
       cursor: pointer;
     }
-    @keyframes glitch-text {
-      0% { text-shadow: 2px 0 red; }
-      50% { text-shadow: -2px 0 blue; }
-      100% { text-shadow: 2px 0 red; }
+
+    /* HIDDEN LINK */
+    .void-link {
+      position: fixed;
+      bottom: 6px;
+      right: 10px;
+      font-size: 10px;
+      color: #00ff99;
+      opacity: 0.08;
+      text-decoration: none;
+      transition: opacity 0.3s ease;
+    }
+    .void-link:hover {
+      opacity: 0.6;
     }
   </style>
 </head>
 <body>
+  <!-- GLITCH LOGO -->
   <div class="glitch-logo-wrapper">
     <img src="flvr404-logo.png" alt="FLVR404 Logo" class="glitch-logo" />
     <img src="flvr404-logo.png" alt="FLVR404 Logo Glitch" class="glitch-logo glitch-overlay" />
   </div>
 
+  <!-- TITLE -->
   <h1>DROP_01 : SYSTEM BREACH</h1>
+  <div class="subtitle">TraceLog_01: Unauthorized public access granted.</div>
+
+  <!-- COUNTDOWN -->
   <div class="countdown" id="countdown">Loading timer...</div>
   <button onclick="alert('Too early. This drop is encrypted.')">Access Drop</button>
+
+  <!-- SECRET LINK -->
+  <a class="void-link" href="/void">ENTER VOID</a>
 
   <script>
     const countdown = document.getElementById("countdown");
