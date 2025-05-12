@@ -8,13 +8,23 @@
       background-color: black;
       color: #00ff99;
       font-family: monospace;
+      margin: 0;
+      height: 100vh;
       display: flex;
-      flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100vh;
-      margin: 0;
       overflow: hidden;
+    }
+
+    .frame {
+      border: 1px solid #00ff99;
+      padding: 40px 30px;
+      box-shadow: 0 0 20px #00ff99aa;
+      background-color: rgba(0, 255, 153, 0.03);
+      text-align: center;
+      width: 90%;
+      max-width: 500px;
+      position: relative;
     }
 
     /* SCANLINE OVERLAY */
@@ -29,11 +39,11 @@
       z-index: 999;
     }
 
-    /* GLITCH LOGO */
+    /* LOGO GLITCH */
     .glitch-logo-wrapper {
       position: relative;
       width: 150px;
-      margin-bottom: 20px;
+      margin: 0 auto 20px;
     }
     .glitch-logo {
       width: 100%;
@@ -88,7 +98,6 @@
       cursor: pointer;
     }
 
-    /* HIDDEN LINK */
     .void-link {
       position: fixed;
       bottom: 6px;
@@ -105,21 +114,18 @@
   </style>
 </head>
 <body>
-  <!-- GLITCH LOGO -->
-  <div class="glitch-logo-wrapper">
-    <img src="flvr404-logo.png" alt="FLVR404 Logo" class="glitch-logo" />
-    <img src="flvr404-logo.png" alt="FLVR404 Logo Glitch" class="glitch-logo glitch-overlay" />
+  <div class="frame">
+    <div class="glitch-logo-wrapper">
+      <img src="flvr404-logo.png" alt="FLVR404 Logo" class="glitch-logo" />
+      <img src="flvr404-logo.png" alt="FLVR404 Logo Glitch" class="glitch-logo glitch-overlay" />
+    </div>
+
+    <h1>DROP_01 : SYSTEM BREACH</h1>
+    <div class="subtitle">TraceLog_01: Unauthorized public access granted.</div>
+    <div class="countdown" id="countdown">Loading timer...</div>
+    <button onclick="alert('Too early. This drop is encrypted.')">Access Drop</button>
   </div>
 
-  <!-- TITLE -->
-  <h1>DROP_01 : SYSTEM BREACH</h1>
-  <div class="subtitle">TraceLog_01: Unauthorized public access granted.</div>
-
-  <!-- COUNTDOWN -->
-  <div class="countdown" id="countdown">Loading timer...</div>
-  <button onclick="alert('Too early. This drop is encrypted.')">Access Drop</button>
-
-  <!-- SECRET LINK -->
   <a class="void-link" href="/void">ENTER VOID</a>
 
   <script>
