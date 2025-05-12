@@ -152,5 +152,20 @@
 
     setInterval(updateCountdown, 1000);
   </script>
+
+<audio id="glitchAudio" autoplay loop hidden>
+  <source src="flvr404-bg-glitch.mp3" type="audio/mpeg" />
+</audio>
+
+<script>
+  // Bypass autoplay policy — starts on first user interaction
+  window.addEventListener('click', () => {
+    const audio = document.getElementById('glitchAudio');
+    if (audio && audio.paused) {
+      audio.play().catch(e => console.log("Autoplay blocked:", e));
+    }
+  }, { once: true });
+</script>
+
 </body>
 </html>
