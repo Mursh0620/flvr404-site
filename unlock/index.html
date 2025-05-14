@@ -1,10 +1,10 @@
-<!-- FLVR404 Terminal v9.5: XP + Rank + Badge + Leaderboard + VIDEO BACKGROUND + Typing Sound Variants -->
+<!-- FLVR404 Terminal FINALIZED FIXED: XP + Rank + Leaderboard + Background Audio/Video + Typing Sounds -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>FLVR404 Terminal Breach</title>
+  <title>Terminal Breach</title>
   <style>
     :root {
       --primary: #00ffcc;
@@ -30,7 +30,7 @@
       height: 100vh;
       object-fit: cover;
       z-index: -2;
-      opacity: 0.2;
+      opacity: 0.15;
       filter: blur(2px) contrast(120%);
     }
     #terminal {
@@ -78,25 +78,41 @@
       padding: 0.5rem;
       outline: none;
     }
-  </style>
+    #controls {
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    z-index: 99;
+    display: flex;
+    gap: 0.5rem;
+  }
+  #controls button {
+    background: var(--bg);
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    padding: 0.4rem 0.6rem;
+    font-family: monospace;
+    cursor: pointer;
+  }
+$1
 </head>
-<body>
+$1
+  <div id="controls">
+    <button onclick="toggleAudio()">🔊 Audio</button>
+    <button onclick="toggleVideo()">🎥 Video</button>
+  </div>
   <!-- Background video layer -->
-  <video autoplay loop playsinline id="bg-video">
+  <video autoplay loop muted playsinline id="bg-video">
     <source src="assets/video/unlock-bg.mp4" type="video/mp4">
-    Your browser does not support the video tag.
   </video>
 
   <!-- Background ambient audio -->
-  <audio autoplay loop playsinline id="bg-audio" controls style="display:none;">
-    <source src="assets/audio/unlock-bg.mp3" type="audio/mpeg">
-    Your browser does not support the audio element.
-  </audio>
+  <audio id="bg-audio" src="assets/audio/unlock-bg.mp3" autoplay loop></audio>
 
   <!-- Typing sound variants -->
-  <audio id="typing1" src="assets/audio/typing1.mp3" preload="auto"></audio>
-  <audio id="typing2" src="assets/audio/typing2.mp3" preload="auto"></audio>
-  <audio id="typing3" src="assets/audio/typing3.mp3" preload="auto"></audio>
+  <audio id="typing1" src="assets/audio/typing 1.mp3" preload="auto"></audio>
+  <audio id="typing2" src="assets/audio/typing 2.mp3" preload="auto"></audio>
+  <audio id="typing3" src="assets/audio/typing 3.mp3" preload="auto"></audio>
 
   <div class="glitch-text typing">FLVR404@system:~$ Type a command</div>
   <div id="output"></div>
@@ -109,13 +125,22 @@
       document.getElementById('typing3')
     ];
 
+    const bgAudio = document.getElementById('bg-audio');
+    const bgVideo = document.getElementById('bg-video');
+
+    // Ensure user interaction trigger for autoplay if browser blocks
+    window.addEventListener('click', () => {
+      bgAudio.play().catch(() => {});
+      bgVideo.play().catch(() => {});
+    });
+
     const inputField = document.getElementById('cmdInput');
     const output = document.getElementById('output');
     let strike = 0;
     let xp = parseInt(localStorage.getItem('flvr404_xp')) || 0;
     let leaderboard = JSON.parse(localStorage.getItem('flvr404_leaderboard')) || [];
 
-    inputField.addEventListener('keydown', () => {
+    inputField.addEventListener('keydown', function(e) {
       const sound = typingSounds[Math.floor(Math.random() * typingSounds.length)];
       sound.currentTime = 0;
       sound.play();
@@ -230,6 +255,20 @@
         inputField.value = '';
       }
     });
-  </script>
+  function toggleAudio() {
+  if (bgAudio.paused) {
+    bgAudio.play();
+  } else {
+    bgAudio.pause();
+  }
+}
+
+function toggleVideo() {
+  if (bgVideo.paused) {
+    bgVideo.play();
+  } else {
+    bgVideo.pause();
+  }
+}
 </body>
 </html>
