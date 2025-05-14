@@ -1,0 +1,168 @@
+/* ---------- THEME TOKENS ---------- */
+:root {
+  --primary: #00ffcc;
+  --danger: #ff0055;
+  --warning: #ffaa00;
+  --bg: #000;
+}
+
+/* ---------- RESET ---------- */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  font-family: monospace;
+  background: var(--bg);
+  color: var(--primary);
+  overflow: hidden;
+}
+
+/* ---------- BACKGROUND VIDEO ---------- */
+#bg-video {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: -2;
+  filter: blur(2px) contrast(120%);
+  opacity: 0.15;
+}
+
+/* ---------- INTRO GLITCH ---------- */
+#intro {
+  position: fixed;
+  inset: 0;
+  background: #000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  animation: fadeOut 3.5s ease forwards 2.5s;
+}
+
+#intro .lines {
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(to bottom,
+      rgba(255, 255, 255, 0.03) 0 1px,
+      transparent 1px 2px);
+}
+
+#intro .text {
+  font-size: 1.2rem;
+  animation: blinkFast 0.1s infinite;
+  z-index: 1;
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@keyframes blinkFast {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* ---------- TERMINAL ---------- */
+#terminal {
+  position: relative;
+  height: 100vh;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+#prompt {
+  font-size: 1rem;
+  border-right: 2px solid var(--primary);
+  white-space: nowrap;
+  overflow: hidden;
+  animation: typing 3s steps(40, end), blink 0.75s step-end infinite;
+}
+
+@keyframes typing {
+  from {
+    width: 0;
+  }
+  to {
+    width: 100%;
+  }
+}
+
+@keyframes blink {
+  50% {
+    border-color: transparent;
+  }
+}
+
+#output {
+  height: 30vh;
+  overflow-y: auto;
+  background: rgba(0, 0, 0, 0.6);
+  border: 2px solid var(--primary);
+  padding: 0.75rem;
+  font-size: 0.85rem;
+}
+
+#cmdInput {
+  background: var(--bg);
+  border: 2px solid var(--primary);
+  padding: 0.5rem;
+  margin-top: 0.5rem;
+  color: var(--primary);
+  font-family: monospace;
+  font-size: 1rem;
+  width: 100%;
+  outline: none;
+}
+
+/* ---------- CONTROLS ---------- */
+#controls {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  display: flex;
+  gap: 0.75rem;
+  z-index: 100;
+}
+
+#controls img {
+  width: 24px;
+  cursor: pointer;
+  transition: transform 0.2s, filter 0.2s;
+}
+
+#controls img:hover {
+  transform: scale(1.2);
+  filter: brightness(1.4) contrast(1.2);
+}
+
+#controls img:active {
+  transform: scale(0.9) rotate(-5deg);
+  filter: brightness(0.8) contrast(1.5);
+  animation: glitchSpark 0.3s ease;
+}
+
+@keyframes glitchSpark {
+  25% {
+    filter: hue-rotate(30deg) blur(1px);
+    transform: scale(1.05) skewX(2deg);
+  }
+  50% {
+    filter: hue-rotate(-30deg) blur(0);
+    transform: scale(0.95) skewX(-2deg);
+  }
+}
