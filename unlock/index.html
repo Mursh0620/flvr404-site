@@ -5,6 +5,54 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Terminal Breach</title>
+<style>
+  #intro-glitch {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: black;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    z-index: 9999;
+    animation: fadeOut 3.5s ease forwards;
+    animation-delay: 2.5s;
+  }
+  .glitch-text-intro {
+    font-size: 1.2rem;
+    color: #00ffcc;
+    animation: blink-fast 0.1s infinite;
+    z-index: 2;
+  }
+  .glitch-lines {
+    width: 100%;
+    height: 100%;
+    background-image: repeating-linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.03) 0,
+      rgba(255, 255, 255, 0.03) 1px,
+      transparent 1px,
+      transparent 2px
+    );
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+  }
+  @keyframes fadeOut {
+    to {
+      opacity: 0;
+      visibility: hidden;
+    }
+  }
+  @keyframes blink-fast {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+</style>
   <style>
     :root {
       --primary: #00ffcc;
@@ -94,10 +142,16 @@
     font-family: monospace;
     cursor: pointer;
   }
-$1
+</style>
+
 </head>
-$1
-  <div id="controls">
+
+  <div id="intro-glitch">
+  <div class="glitch-lines"></div>
+  <div class="glitch-text-intro">ACCESSING FLVR404 SYSTEM...</div>
+</div>
+
+<div id="controls">
     <button onclick="toggleAudio()">🔊 Audio</button>
     <button onclick="toggleVideo()">🎥 Video</button>
   </div>
@@ -270,5 +324,6 @@ function toggleVideo() {
     bgVideo.pause();
   }
 }
+$1
 </body>
 </html>
