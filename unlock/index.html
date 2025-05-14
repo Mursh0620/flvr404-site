@@ -8,10 +8,10 @@
   <title>FLVR404 – Terminal Breach</title>
 
   <!-- favicon -->
-<!-- Modern -->
-<link rel="icon" type="image/png" href="assets/favicon.png">
-<!-- Legacy -->
-<link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+  <!-- Modern -->
+  <link rel="icon" type="image/png" href="assets/favicon.png">
+  <!-- Legacy -->
+  <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
 
   <!-- ====================== GLOBAL STYLES ====================== -->
   <style>
@@ -39,17 +39,16 @@
       overflow: hidden;
     }
 
-    /* BACKGROUND VIDEO */
+    /* ---------- BACKGROUND VIDEO ---------- */
     #bg-video {
-      background-color: #000; /* Fallback jika video gagal dimuat */
       position: fixed;
-      top: 0;
-      left: 0;
+      inset: 0;
       width: 100vw;
       height: 100vh;
       object-fit: cover;
-      z-index: -1;
-      filter: brightness(0.4) contrast(1.2);
+      z-index: -2;
+      filter: blur(2px) contrast(120%);
+      opacity: 0.15;
     }
 
     /* ---------- INTRO GLITCH ---------- */
@@ -115,6 +114,7 @@
       from {
         width: 0;
       }
+
       to {
         width: 100%;
       }
@@ -179,6 +179,7 @@
         filter: hue-rotate(30deg) blur(1px);
         transform: scale(1.05) skewX(2deg);
       }
+
       50% {
         filter: hue-rotate(-30deg) blur(0);
         transform: scale(0.95) skewX(-2deg);
@@ -195,7 +196,11 @@
   </div>
 
   <!-- Background media -->
-  <video autoplay muted loop playsinline video id="bg-video" src="assets/video/unlock-bg-small.mp4" type="video/mp4" autoplay loop></video>
+  <video autoplay muted loop playsinline preload="auto" id="bg-video">
+    <source src="assets/video/unlock-bg-small.mp4" type="video/mp4" />
+    <!-- Fallback text -->
+    Browser Anda tidak mendukung elemen video.
+  </video>
   <audio id="bg-audio" src="assets/audio/unlock-bg.mp3" autoplay loop></audio>
 
   <!-- Control icons -->
