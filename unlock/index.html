@@ -2,6 +2,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- favicon -->
+<!-- Modern -->
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<!-- Legacy -->
+<link rel="icon" type="image/x-icon" href="assets/favicon.ico">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Terminal Breach</title>
@@ -155,13 +160,14 @@
     <button onclick="toggleAudio()">🔊 Audio</button>
     <button onclick="toggleVideo()">🎥 Video</button>
   </div>
-  <!-- Background video layer -->
-  <video autoplay loop muted playsinline id="bg-video">
-    <source src="assets/video/unlock-bg.mp4" type="video/mp4">
+  <!-- VIDEO BACKGROUND -->
+  <video autoplay muted loop playsinline id="bg-video">
+    <source src="assets/video/unlock-bg.mp4" type="video/mp4" />
   </video>
 
-  <!-- Background ambient audio -->
-  <audio id="bg-audio" src="assets/audio/unlock-bg.mp3" autoplay loop></audio>
+  <!-- GLITCH AUDIO -->
+  <audio id="glitchAudio" autoplay loop hidden>
+    <source src="assets/audio/unlock.mp3" type="audio/mpeg" /></audio>
 
   <!-- Typing sound variants -->
   <audio id="typing1" src="assets/audio/typing 1.mp3" preload="auto"></audio>
