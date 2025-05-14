@@ -146,45 +146,6 @@
       width: 100%;
       outline: none;
     }
-
-    /* ---------- CONTROLS ---------- */
-    #controls {
-      position: fixed;
-      top: 1rem;
-      right: 1rem;
-      display: flex;
-      gap: 0.75rem;
-      z-index: 100;
-    }
-
-    #controls img {
-      width: 24px;
-      cursor: pointer;
-      transition: transform 0.2s, filter 0.2s;
-    }
-
-    #controls img:hover {
-      transform: scale(1.2);
-      filter: brightness(1.4) contrast(1.2);
-    }
-
-    #controls img:active {
-      transform: scale(0.9) rotate(-5deg);
-      filter: brightness(0.8) contrast(1.5);
-      animation: glitchSpark 0.3s ease;
-    }
-
-    @keyframes glitchSpark {
-      25% {
-        filter: hue-rotate(30deg) blur(1px);
-        transform: scale(1.05) skewX(2deg);
-      }
-
-      50% {
-        filter: hue-rotate(-30deg) blur(0);
-        transform: scale(0.95) skewX(-2deg);
-      }
-    }
   </style>
 </head>
 
@@ -203,19 +164,6 @@
   </video>
   <audio id="bg-audio" src="assets/audio/unlock-bg.mp3" autoplay loop></audio>
 
-  <!-- Control icons -->
-  <div id="controls">
-    <span id="audio-icon" onclick="toggleAudio()" style="font-size: 1.5rem; cursor: pointer;">🔊</span>
-    <span id="video-icon" onclick="toggleVideo()" style="font-size: 1.5rem; cursor: pointer;">🎥</span>
-  </div>
-
-  <!-- Typing SFX -->
-  <audio id="typing1" src="assets/audio/typing 1.mp3" preload="auto"></audio>
-  <audio id="typing2" src="assets/audio/typing 2.mp3" preload="auto"></audio>
-  <audio id="typing3" src="assets/audio/typing 3.mp3" preload="auto"></audio>
-  <audio id="sfx-audio-toggle" src="assets/audio/sfx-audio-toggle.mp3" preload="auto"></audio>
-  <audio id="sfx-video-toggle" src="assets/audio/sfx-video-toggle.mp3" preload="auto"></audio>
-
   <!-- Terminal UI -->
   <div id="terminal">
     <div id="prompt">FLVR404@system:~$ Type a command</div>
@@ -227,16 +175,6 @@
   <script>
     /* ----- DOM refs ----- */
     const bgAudio = document.getElementById('bg-audio');
-    const bgVideo = document.getElementById('bg-video');
-    let audioIcon = document.getElementById('audio-icon');
-    let videoIcon = document.getElementById('video-icon');
-    const typingSounds = [
-      document.getElementById('typing1'),
-      document.getElementById('typing2'),
-      document.getElementById('typing3')
-    ];
-    const sfxAudioToggle = document.getElementById('sfx-audio-toggle');
-    const sfxVideoToggle = document.getElementById('sfx-video-toggle');
     const inputField = document.getElementById('cmdInput');
     const output = document.getElementById('output');
 
@@ -250,39 +188,18 @@
       scrollBottom();
     };
 
-    /* ----- audio/video toggle ----- */
-    function toggleAudio() {
-      sfxAudioToggle.currentTime = 0;
-      sfxAudioToggle.play();
-      if (bgAudio.paused) {
-        bgAudio.play();
-        audioIcon.textContent = '🔊';
-      } else {
-        bgAudio.pause();
-        audioIcon.textContent = '🔇';
-      }
-    }
-
-    function toggleVideo() {
-      sfxVideoToggle.currentTime = 0;
-      sfxVideoToggle.play();
-      if (bgVideo.paused) {
-        bgVideo.play();
-        videoIcon.textContent = '🎥';
-      } else {
-        bgVideo.pause();
-        videoIcon.textContent = '📴';
-      }
-    }
-
     /* ----- autoplay unlock on first click ----- */
     window.addEventListener('click', () => {
       bgAudio.play().catch(() => {});
-      bgVideo.play().catch(() => {});
     }, { once: true });
 
     /* ----- typing SFX */
     inputField.addEventListener('keydown', () => {
+      const typingSounds = [
+        document.getElementById('typing1'),
+        document.getElementById('typing2'),
+        document.getElementById('typing3')
+      ];
       const s = typingSounds[Math.floor(Math.random() * typingSounds.length)];
       s.currentTime = 0;
       s.play();
