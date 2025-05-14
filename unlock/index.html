@@ -39,16 +39,17 @@
       overflow: hidden;
     }
 
-    /* ---------- BACKGROUND VIDEO ---------- */
+    /* BACKGROUND VIDEO */
     #bg-video {
+      background-color: #000; /* Fallback jika video gagal dimuat */
       position: fixed;
-      inset: 0;
+      top: 0;
+      left: 0;
       width: 100vw;
       height: 100vh;
       object-fit: cover;
-      z-index: -2;
-      filter: blur(2px) contrast(120%);
-      opacity: 0.15;
+      z-index: -1;
+      filter: brightness(0.4) contrast(1.2);
     }
 
     /* ---------- INTRO GLITCH ---------- */
