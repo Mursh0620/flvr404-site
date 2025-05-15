@@ -162,7 +162,7 @@
     <!-- Fallback text -->
     Browser Anda tidak mendukung elemen video.
   </video>
-  <audio id="bg-audio" src="assets/audio/unlock-bg.mp3" autoplay loop></audio>
+  <audio id="bg-audio" src="assets/audio/unlock-bg.mp3" autoplay loop muted></audio>
 
   <!-- Terminal UI -->
   <div id="terminal">
@@ -188,24 +188,22 @@
       scrollBottom();
     };
 
-    /* ----- autoplay unlock on first click ----- */
+    /* ----- Autoplay unlock on first click ----- */
     window.addEventListener('click', () => {
+      bgAudio.muted = false; // Unmute audio on first user interaction
       bgAudio.play().catch(() => {});
     }, { once: true });
 
-    /* ----- typing SFX */
-    inputField.addEventListener('keydown', () => {
-      const typingSounds = [
-        document.getElementById('typing1'),
-        document.getElementById('typing2'),
-        document.getElementById('typing3')
-      ];
-      const s = typingSounds[Math.floor(Math.random() * typingSounds.length)];
-      s.currentTime = 0;
-      s.play();
+    /* ----- Handle tab mute/unmute ----- */
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        bgAudio.muted = true; // Mute audio when tab is hidden
+      } else {
+        bgAudio.muted = false; // Unmute audio when tab is visible
+      }
     });
 
-    /* ----- simple command processor (extend as needed) ----- */
+    /* ----- Simple command processor (extend as needed) ----- */
     inputField.addEventListener('keydown', (e) => {
       if (e.key !== 'Enter') return;
       const cmd = inputField.value.trim();
