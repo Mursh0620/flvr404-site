@@ -1,4 +1,4 @@
-<!-- FLVR404 Terminal – clean, maintainable structure (v10) -->
+<!-- FLVR404 Terminal – clean, maintainable structure -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,27 +7,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>FLVR404 – Terminal Breach</title>
 
-  <!-- favicon -->
-  <!-- Modern -->
-  <link rel="icon" type="image/png" href="assets/favicon.png">
-  <!-- Legacy -->
-  <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
-
-  <!-- ====================== GLOBAL STYLES ====================== -->
   <style>
-    /* ---------- THEME TOKENS ---------- */
     :root {
       --primary: #00ffcc;
-      --danger: #ff0055;
-      --warning: #ffaa00;
       --bg: #000;
-    }
-
-    /* ---------- RESET ---------- */
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
     }
 
     html,
@@ -39,7 +22,6 @@
       overflow: hidden;
     }
 
-    /* ---------- BACKGROUND VIDEO ---------- */
     #bg-video {
       position: fixed;
       inset: 0;
@@ -51,47 +33,6 @@
       opacity: 0.15;
     }
 
-    /* ---------- INTRO GLITCH ---------- */
-    #intro {
-      position: fixed;
-      inset: 0;
-      background: #000;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      z-index: 9999;
-      animation: fadeOut 3.5s ease forwards 2.5s;
-    }
-
-    #intro .lines {
-      position: absolute;
-      inset: 0;
-      background-image: repeating-linear-gradient(to bottom,
-          rgba(255, 255, 255, 0.03) 0 1px,
-          transparent 1px 2px);
-    }
-
-    #intro .text {
-      font-size: 1.2rem;
-      animation: blinkFast 0.1s infinite;
-      z-index: 1;
-    }
-
-    @keyframes fadeOut {
-      to {
-        opacity: 0;
-        visibility: hidden;
-      }
-    }
-
-    @keyframes blinkFast {
-      50% {
-        opacity: 0;
-      }
-    }
-
-    /* ---------- TERMINAL ---------- */
     #terminal {
       position: relative;
       height: 100vh;
@@ -99,31 +40,6 @@
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
-      gap: 1rem;
-    }
-
-    #prompt {
-      font-size: 1rem;
-      border-right: 2px solid var(--primary);
-      white-space: nowrap;
-      overflow: hidden;
-      animation: typing 3s steps(40, end), blink 0.75s step-end infinite;
-    }
-
-    @keyframes typing {
-      from {
-        width: 0;
-      }
-
-      to {
-        width: 100%;
-      }
-    }
-
-    @keyframes blink {
-      50% {
-        border-color: transparent;
-      }
     }
 
     #output {
@@ -150,74 +66,60 @@
 </head>
 
 <body>
-  <!-- Intro overlay -->
-  <div id="intro">
-    <div class="lines"></div>
-    <div class="text">ACCESSING FLVR404 SYSTEM...</div>
-  </div>
-
-  <!-- Background media -->
+  <!-- Background video -->
   <video autoplay muted loop playsinline preload="auto" id="bg-video">
     <source src="assets/video/unlock-bg-small.mp4" type="video/mp4" />
-    <!-- Fallback text -->
     Browser Anda tidak mendukung elemen video.
   </video>
-  <audio id="bg-audio" src="assets/audio/unlock-bg.mp3" autoplay loop muted></audio>
 
   <!-- Terminal UI -->
   <div id="terminal">
-    <div id="prompt">FLVR404@system:~$ Type a command</div>
     <div id="output"></div>
-    <input id="cmdInput" type="text" placeholder="/" autofocus />
+    <input id="cmdInput" type="text" placeholder="Type a command..." autofocus />
   </div>
 
-  <!-- ====================== SCRIPT ====================== -->
   <script>
-    /* ----- DOM refs ----- */
-    const bgAudio = document.getElementById('bg-audio');
-    const inputField = document.getElementById('cmdInput');
+    // DOM references
+    const bgVideo = document.getElementById('bg-video');
+    const cmdInput = document.getElementById('cmdInput');
     const output = document.getElementById('output');
 
-    /* ----- helpers ----- */
-    const scrollBottom = () => (output.scrollTop = output.scrollHeight);
+    // Helper to add lines to terminal output
     const addLine = (text, cls = '') => {
       const line = document.createElement('div');
       if (cls) line.className = cls;
       line.textContent = text;
       output.appendChild(line);
-      scrollBottom();
+      output.scrollTop = output.scrollHeight;
     };
 
-    /* ----- Autoplay unlock on first click ----- */
-    window.addEventListener('click', () => {
-      bgAudio.muted = false; // Unmute audio on first user interaction
-      bgAudio.play().catch(() => {});
-    }, { once: true });
+    // Command processor
+    cmdInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const cmd = cmdInput.value.trim();
+        cmdInput.value = '';
 
-    /* ----- Handle tab mute/unmute ----- */
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) {
-        bgAudio.muted = true; // Mute audio when tab is hidden
-      } else {
-        bgAudio.muted = false; // Unmute audio when tab is visible
-      }
-    });
+        // Add the command to the output
+        addLine(`$ ${cmd}`, 'cmd');
 
-    /* ----- Simple command processor (extend as needed) ----- */
-    inputField.addEventListener('keydown', (e) => {
-      if (e.key !== 'Enter') return;
-      const cmd = inputField.value.trim();
-      inputField.value = '';
-      if (!cmd) return;
+        // Handle specific commands
+        switch (cmd) {
+          case '/play_now':
+            if (bgVideo.paused) {
+              bgVideo.play();
+              addLine('Background video is now playing.');
+            } else {
+              addLine('Background video is already playing.');
+            }
+            break;
 
-      addLine(`$ ${cmd}`, 'cmd');
+          case '/clear':
+            output.innerHTML = '';
+            break;
 
-      switch (cmd) {
-        case '/clear':
-          output.innerHTML = '';
-          break;
-        default:
-          addLine('command not found', 'err');
+          default:
+            addLine('Command not found.');
+        }
       }
     });
   </script>
