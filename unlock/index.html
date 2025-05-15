@@ -2,130 +2,103 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
-  <title>FLVR404 – Terminal Breach</title>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FLVR404 Terminal</title>
   <style>
     :root {
-      --primary: #00ffcc;
-      --bg: #000;
+      --primary-color: #00ffcc;
+      --text-color: #ffffff;
+      --background-opacity: rgba(0, 0, 0, 0.5);
     }
 
-    html,
     body {
-      height: 100%;
-      font-family: monospace;
-      background: var(--bg);
-      color: var(--primary);
+      margin: 0;
+      padding: 0;
+      font-family: 'Courier New', Courier, monospace;
+      background: black;
+      color: var(--text-color);
       overflow: hidden;
     }
 
+    /* Background Video */
     #bg-video {
       position: fixed;
-      inset: 0;
-      width: 100vw;
-      height: 100vh;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       object-fit: cover;
-      z-index: -2; /* Pastikan video di belakang semua elemen */
+      z-index: -2;
       filter: blur(2px) contrast(120%);
-      opacity: 0.15;
+      opacity: 0.2;
     }
 
-    #terminal {
+    /* Terminal Container */
+    .terminal {
       position: absolute;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 30%; /* Lebar terminal lebih kecil */
-      height: 25%; /* Tinggi terminal lebih kecil */
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      border: 2px solid var(--primary); /* Hanya garis frame */
-      background: none; /* Tidak ada background */
-      z-index: 1; /* Pastikan terminal di atas video */
+      width: 400px;
+      padding: 20px;
+      border: 2px solid var(--primary-color);
+      border-radius: 10px;
+      background: var(--background-opacity);
+      z-index: 1;
+      box-shadow: 0 0 15px var(--primary-color);
+      text-align: center;
     }
 
-    #output {
-      height: 60%; /* Tinggi output di dalam terminal */
-      overflow-y: auto;
-      padding: 0.5rem;
-      font-size: 0.75rem; /* Ukuran font lebih kecil */
-      background: none; /* Tidak ada background untuk teks */
+    /* Terminal Header */
+    .terminal-header {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: var(--primary-color);
     }
 
-    #cmdInput {
-      background: none; /* Tidak ada background */
-      border: 2px solid var(--primary);
-      padding: 0.25rem;
-      margin-top: 0.25rem;
-      color: var(--primary);
-      font-family: monospace;
-      font-size: 0.75rem; /* Ukuran font lebih kecil */
+    /* Terminal Content */
+    .terminal-content {
+      font-size: 1rem;
+      line-height: 1.5;
+      margin-bottom: 10px;
+    }
+
+    /* Input Command */
+    .terminal-input {
+      width: 100%;
+      padding: 10px;
+      font-size: 1rem;
+      border: 2px solid var(--primary-color);
+      background: black;
+      color: var(--text-color);
+      border-radius: 5px;
       outline: none;
+    }
+
+    /* Glow Effect */
+    .terminal-input:focus {
+      box-shadow: 0 0 10px var(--primary-color);
     }
   </style>
 </head>
 
 <body>
-  <!-- Background video -->
-  <video autoplay muted loop playsinline preload="auto" id="bg-video">
+  <!-- Background Video -->
+  <video autoplay muted loop playsinline id="bg-video">
     <source src="assets/video/unlock-bg-small.mp4" type="video/mp4" />
-    Browser Anda tidak mendukung elemen video.
+    Your browser does not support the video tag.
   </video>
 
-  <!-- Terminal UI -->
-  <div id="terminal">
-    <div id="output"></div>
-    <input id="cmdInput" type="text" placeholder="Type a command..." autofocus />
+  <!-- Terminal -->
+  <div class="terminal">
+    <div class="terminal-header">FLVR404 Terminal</div>
+    <div class="terminal-content">
+      <p>Type your commands below:</p>
+    </div>
+    <input type="text" class="terminal-input" placeholder="Type a command..." autofocus>
   </div>
-
-  <script>
-    // DOM references
-    const bgVideo = document.getElementById('bg-video');
-    const cmdInput = document.getElementById('cmdInput');
-    const output = document.getElementById('output');
-
-    // Helper to add lines to terminal output
-    const addLine = (text, cls = '') => {
-      const line = document.createElement('div');
-      if (cls) line.className = cls;
-      line.textContent = text;
-      output.appendChild(line);
-      output.scrollTop = output.scrollHeight;
-    };
-
-    // Command processor
-    cmdInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        const cmd = cmdInput.value.trim();
-        cmdInput.value = '';
-
-        // Add the command to the output
-        addLine(`$ ${cmd}`, 'cmd');
-
-        // Handle specific commands
-        switch (cmd) {
-          case '/play_now':
-            if (bgVideo.paused) {
-              bgVideo.play();
-              addLine('Background video is now playing.');
-            } else {
-              addLine('Background video is already playing.');
-            }
-            break;
-
-          case '/clear':
-            output.innerHTML = '';
-            break;
-
-          default:
-            addLine('Command not found.');
-        }
-      }
-    });
-  </script>
 </body>
 
 </html>
