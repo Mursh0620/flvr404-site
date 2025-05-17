@@ -17,8 +17,8 @@
       --font-size-header: 1.5rem;
       --font-size-output: 0.9rem;
       --font-size-input: 1rem;
-      --theme-glitch: #ff00ff;
-      --theme-fire: #ff4500;
+      --theme-glitch: #ee00ee;
+      --theme-fire: #cc0000;
     }
 
     body {
@@ -95,6 +95,13 @@
       color: var(--text-color);
       outline: none;
     }
+
+    @media (max-width: 768px) {
+      :root {
+        --terminal-width: 90%;
+        --terminal-height: 300px;
+      }
+    }
   </style>
 </head>
 
@@ -124,13 +131,16 @@
     const terminalInput = document.getElementById("terminal-input");
     const bgAudio = document.getElementById("bg-audio");
 
-    let isUnlocked = false; // State to track if unlock is active
-    let userXP = 0; // Track XP
-    let userLevel = 1; // Track Level
+    let isUnlocked = false;
+    let userXP = parseInt(localStorage.getItem("userXP")) || 0;
+    let userLevel = parseInt(localStorage.getItem("userLevel")) || 1;
 
-    // Enable audio playback after user interaction
+
     const enableAudio = () => {
-      bgAudio.play().catch(err => console.error("Audio playback failed:", err));
+      bgAudio.play().catch(err => {
+        console.error("Audio playback failed:", err);
+        appendOutput("Unable to play background audio. Please check your browser settings.");
+      });
       document.body.removeEventListener("click", enableAudio);
     };
 
@@ -145,116 +155,200 @@
     });
 
     function processCommand(command) {
-      switch (command) {
-        case "help":
-          appendOutput(
-            "Commands:\n- unlock\n- lock\n- decrypt\n- xp\n- download\n- theme [glitch|fire]\n- login\n- 404\n- redeem\n- clear"
-          );
-          break;
-        case "unlock":
-          handleUnlock();
-          break;
-        case "lock":
-          handleLock();
-          break;
-        case "decrypt":
-          handleDecrypt();
-          break;
-        case "xp":
-          handleXP();
-          break;
-        case "download":
-          handleDownload();
-          break;
-        case "theme glitch":
-          document.documentElement.style.setProperty("--primary-color", "var(--theme-glitch)");
-          appendOutput("Theme changed to Glitch.");
-          break;
-        case "theme fire":
-          document.documentElement.style.setProperty("--primary-color", "var(--theme-fire)");
-          appendOutput("Theme changed to Fire.");
-          break;
-        case "login":
-          appendOutput("Login feature coming soon!");
-          break;
-        case "404":
-          handleError404();
-          break;
-        case "redeem":
-          appendOutput("Redeem feature coming soon!");
-          break;
-        case "clear":
-          terminalOutput.innerHTML = ""; // Clear all terminal output
-          break;
-        default:
+  if (!command) {
+    appendOutput("Please enter a command.");
+    return;
+  }
+
+  try {
+    switch (command) {
+      case "help":
+        appendOutput(
+          "Commands:\n" +
+          "- unlock: Unlock access.\n" +
+          "- lock: Lock access.\n" +
+          "- decrypt: Solve a binary puzzle.\n" +
+          "- xp: View your XP and level.\n" +
+          "- download: Simulate a file download.\n" +
+          "- theme [glitch|fire|default]: Change terminal theme.\n" +
+          "- login: Simulate login feature.\n" +
+          "- 404: Trigger a glitch effect.\n" +
+          "- redeem: Simulate redeem feature.\n" +
+          "- clear: Clear the terminal output."
+        );
+        addXP(5); // XP untuk perintah "help"
+        break;
+      case "unlock":
+        handleUnlock(); // XP ditambahkan di dalam handleUnlock
+        break;
+      case "lock":
+        handleLock();
+        addXP(10); // XP untuk perintah "lock"
+        break;
+      case "decrypt":
+        handleDecrypt();
+        addXP(15); // XP untuk perintah "decrypt"
+        break;
+      case "xp":
+        handleXP();
+        addXP(5); // XP untuk perintah "xp"
+        break;
+      case "download":
+        handleDownload();
+        addXP(10); // XP untuk perintah "download"
+        break;
+      case "404":
+        handleError404();
+        addXP(5); // XP untuk perintah "404"
+        break;
+      case "clear":
+        terminalOutput.innerHTML = ""; // Bersihkan terminal
+        appendOutput("Terminal cleared. Type 'help' to view commands.");
+        addXP(2); // XP untuk perintah "clear"
+        break;
+      case "redeem":
+        handleRedeem(); // XP ditambahkan di dalam handleRedeem
+        break;
+      case "login":
+        handleLogin(); // XP ditambahkan di dalam handleLogin
+        break;
+      case "theme glitch":
+      case "theme fire":
+      case "theme default":
+        changeTheme(command.split(" ")[1]);
+        addXP(5); // XP untuk perintah "theme"
+        break;
+      default:
+        if (command.startsWith("theme ")) {
+          const requestedTheme = command.split(" ")[1];
+          appendOutput(`Unknown theme: "${requestedTheme}". Available themes: glitch, fire, default.`);
+        } else {
           appendOutput(`Unknown command: "${command}". Type "help" for a list of commands.`);
-      }
+        }
+        // Tidak ada XP untuk perintah tidak dikenal
     }
+  } catch (error) {
+    console.error("Error processing command:", error);
+    appendOutput("An error occurred while processing your command.");
+  }
+}
 
     function appendOutput(text) {
-      terminalOutput.innerHTML += `\n${text}`;
-      terminalOutput.scrollTop = terminalOutput.scrollHeight;
-    }
+  const line = document.createElement("div"); // Buat elemen baru untuk setiap baris
+  line.innerHTML = text; // Gunakan innerHTML untuk mendukung HTML
+  terminalOutput.appendChild(line); // Tambahkan elemen ke terminal
+  terminalOutput.scrollTop = terminalOutput.scrollHeight; // Auto-scroll ke bawah
+}
 
     async function simulateTyping(text, delay = 50) {
-      const lastLine = document.createElement("span"); // Create a span for horizontal typing
-      terminalOutput.appendChild(lastLine);
+      const line = document.createElement("div"); // Buat elemen baru untuk setiap baris
+      terminalOutput.appendChild(line);
 
       for (let char of text) {
-        lastLine.textContent += char; // Update content of the last line
-        await new Promise((resolve) => setTimeout(resolve, delay));
+        line.textContent += char; // Tambahkan teks ke elemen baru
+        await new Promise(resolve => setTimeout(resolve, delay));
       }
-      terminalOutput.innerHTML += "\n"; // Add a line break after typing complete
-      terminalOutput.scrollTop = terminalOutput.scrollHeight;
+
+      terminalOutput.scrollTop = terminalOutput.scrollHeight; // Auto-scroll ke bawah
     }
 
-    // Handles the unlock command
     async function handleUnlock() {
       if (isUnlocked) {
         appendOutput("Access already granted! Navigate to: <a href='/DROP_01' target='_blank'>DROP_01</a>");
         return;
       }
-
-      await simulateTyping("Verifying credentials...", 100); // Simulate typing effect
+      await simulateTyping("Verifying credentials...", 100); // Simulasi pengetikan
       setTimeout(async () => {
-        isUnlocked = true; // Update unlock state
-        await simulateTyping("Access granted.", 100);
+        isUnlocked = true;
+        await simulateTyping("Access granted.", 100); // Simulasi pengetikan
         appendOutput("Navigate to: <a href='/DROP_01' target='_blank'>DROP_01</a>");
-      }, 2000); // Simulate delay for verification
+        addXP(20); // Tambahkan XP setelah semua teks selesai
+      }, 2000);
     }
 
-    // Handles the lock command
     function handleLock() {
       if (!isUnlocked) {
         appendOutput("Access is already locked.");
         return;
       }
-
-      isUnlocked = false; // Reset unlock state
+      isUnlocked = false;
       appendOutput("Access has been revoked. Use 'unlock' to regain access.");
     }
 
-    // Handles the decrypt command
     function handleDecrypt() {
       appendOutput("Decrypt this: 01010011 01101100 01100001 01111001\n(Hint: Convert binary to text)");
     }
 
-    // Handles the XP command
     function handleXP() {
-      appendOutput(`XP: ${userXP}\nLevel: ${userLevel}\nBadges: 🧠 🔐`);
-    }
+  appendOutput(`🧠 XP: ${userXP}\n📶 Level: ${userLevel}\n🔖 Badges: ${userLevel >= 3 ? '🧠 🔐 💾' : '🧠 🔐'}`);
+  localStorage.setItem("userXP", userXP);
+  localStorage.setItem("userLevel", userLevel);
+}
 
-    // Handles the download command
     function handleDownload() {
       appendOutput("Simulating download... File: glitch_data.zip");
     }
 
-    // Handles the 404 command
     function handleError404() {
       appendOutput("SYSTEM CRASH INITIATED! ⚠️ Glitch overload...");
       document.body.style.backgroundColor = "red";
-      setTimeout(() => document.body.style.backgroundColor = "black", 1000);
+      setTimeout(() => {
+        document.body.style.backgroundColor = "black";
+      }, 1000);
     }
+
+    function changeTheme(theme) {
+  switch (theme) {
+    case "glitch":
+      document.documentElement.style.setProperty("--primary-color", "var(--theme-glitch)");
+      appendOutput("Theme changed to Glitch.");
+      break;
+    case "fire":
+      document.documentElement.style.setProperty("--primary-color", "var(--theme-fire)");
+      appendOutput("Theme changed to Fire.");
+      break;
+    case "default":
+      document.documentElement.style.setProperty("--primary-color", "#00ffcc");
+      appendOutput("Theme reset to Default.");
+      break;
+    default:
+      appendOutput(`Unknown theme: "${theme}". Available themes: glitch, fire, default.`);
+  }
+}
+
+function addXP(amount) {
+  userXP += amount;
+  appendOutput(`You earned ${amount} XP! 🧠`);
+  
+  // Perbarui level jika XP mencapai ambang tertentu
+  const levelThreshold = 100; // XP yang dibutuhkan untuk naik level
+  if (userXP >= userLevel * levelThreshold) {
+    userLevel++;
+    appendOutput(`🎉 Congratulations! You've reached Level ${userLevel}!`);
+  }
+
+  // Simpan XP dan level ke localStorage
+  localStorage.setItem("userXP", userXP);
+  localStorage.setItem("userLevel", userLevel);
+}
+
+    async function handleLogin() {
+      appendOutput("Logging in...");
+      await simulateTyping("Authenticating...", 100); // Simulasi pengetikan
+      setTimeout(async () => {
+        await simulateTyping("Login successful! Welcome back. 😊", 100); // Simulasi pengetikan
+        addXP(10); // Tambahkan XP setelah semua teks selesai
+      }, 2000);
+    }
+
+    async function handleRedeem() {
+  appendOutput("Redeeming code...");
+  await simulateTyping("Processing...", 100); // Simulasi pengetikan
+  setTimeout(async () => {
+    await simulateTyping("Code redeemed successfully! 🎉", 100); // Simulasi pengetikan
+    addXP(25); // Tambahkan XP setelah semua teks selesai
+  }, 2000);
+}
   </script>
 </body>
 
