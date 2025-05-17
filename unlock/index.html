@@ -197,11 +197,15 @@
     }
 
     async function simulateTyping(text, delay = 50) {
+      const lastLine = document.createElement("span"); // Create a span for horizontal typing
+      terminalOutput.appendChild(lastLine);
+
       for (let char of text) {
-        appendOutput(char);
+        lastLine.textContent += char; // Update content of the last line
         await new Promise((resolve) => setTimeout(resolve, delay));
       }
-      appendOutput(""); // Add a line break at the end
+      terminalOutput.innerHTML += "\n"; // Add a line break after typing complete
+      terminalOutput.scrollTop = terminalOutput.scrollHeight;
     }
 
     // Handles the unlock command
