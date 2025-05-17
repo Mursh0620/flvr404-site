@@ -4,13 +4,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Interactive FLVR404 Terminal</title>
+  <title>Unlock FLVR404</title>
   <style>
     /* Root variables for consistent theming */
     :root {
       --primary-color: #00ffcc;
       --text-color: #ffffff;
-      --background-opacity: rgba(0, 0, 0, 0.85);
+      --background-opacity: rgba(0, 0, 0, 0.50);
       --terminal-width: 600px;
       --terminal-height: 400px;
       --terminal-padding: 20px;
@@ -56,7 +56,7 @@
       border: 2px solid var(--primary-color);
       border-radius: 10px;
       background: var(--background-opacity);
-      box-shadow: 0 0 20px var(--primary-color);
+      box-shadow: 0 0 20px var(--primary-color), inset 0 0 8px rgba(0,255,200,0.2);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -118,6 +118,12 @@
     Your browser does not support the video tag.
   </video>
 
+  <!-- Background sound -->
+  <audio autoplay loop id="bg-audio">
+    <source src="assets/audio/background-sound.mp3" type="audio/mpeg" />
+    Your browser does not support the audio tag.
+  </audio>
+
   <!-- Terminal container -->
   <div class="terminal">
     <div class="terminal-header">FLVR404 Terminal</div>
@@ -142,7 +148,7 @@
           output = 'Available commands:\n- help: Show this help menu\n- clear: Clear the terminal\n- about: Learn about FLVR404 Terminal';
           break;
         case 'clear':
-          terminalOutput.innerHTML = '';
+          terminalOutput.innerHTML = ''; // Clears the terminal output
           return;
         case 'about':
           output = 'FLVR404 Terminal v1.0\nDesigned for interactive command input and output.';
@@ -156,8 +162,9 @@
     };
 
     // Append text to the terminal output
-    const appendToTerminal = (text) => {
-      terminalOutput.innerHTML += `\n${text}`;
+    const line = document.createElement('div');
+      line.textContent = text;
+      terminalOutput.appendChild(line);
       terminalOutput.scrollTop = terminalOutput.scrollHeight; // Scroll to the bottom
     };
 
