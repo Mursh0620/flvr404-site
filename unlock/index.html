@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Terminal Breach</title>
+  <title>Interactive FLVR404 Terminal</title>
   <style>
     /* Root variables for consistent theming */
     :root {
@@ -108,6 +108,24 @@
       color: var(--text-color);
       outline: none;
     }
+
+    /* Fullscreen button */
+    .fullscreen-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 10px 15px;
+      font-size: 0.9rem;
+      background: var(--primary-color);
+      color: black;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .fullscreen-btn:hover {
+      background: #00e6b3;
+    }
   </style>
 </head>
 
@@ -131,6 +149,7 @@
     <div class="terminal-input-container">
       <input type="text" class="terminal-input" id="terminal-input" placeholder="Type a command..." autofocus>
     </div>
+    <button class="fullscreen-btn" id="fullscreen-btn">Fullscreen</button>
   </div>
 
   <script>
@@ -138,6 +157,7 @@
     const terminalOutput = document.getElementById('terminal-output');
     const terminalInput = document.getElementById('terminal-input');
     const bgAudio = document.getElementById('bg-audio');
+    const fullscreenBtn = document.getElementById('fullscreen-btn');
 
     // Enable audio playback after user interaction
     const enableAudio = () => {
@@ -148,6 +168,20 @@
     // Add event listener for user interaction
     document.body.addEventListener('click', enableAudio);
 
+    // Command history
+    let commandHistory = [];
+    let historyIndex = -1;
+
+    // Fullscreen toggle
+    const toggleFullscreen = () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen();
+      } else {
+        document.exitFullscreen();
+      }
+    };
+    fullscreenBtn.addEventListener('click', toggleFullscreen);
+
     // Command handler
     const handleCommand = (command) => {
       command = command.trim().toLowerCase();
@@ -155,13 +189,21 @@
 
       switch (command) {
         case 'help':
-          output = 'Available commands:\n- help: Show this help menu\n- clear: Clear the terminal\n- about: Learn about FLVR404 Terminal';
+          output = 'Available commands:\n- help: Show this help menu\n- clear: Clear the terminal\n- about: Learn about FLVR404 Terminal\n- time: Show the current time\n- date: Show today\'s date';
           break;
         case 'clear':
           terminalOutput.innerHTML = ''; // Clears the terminal output
           return;
         case 'about':
           output = 'FLVR404 Terminal v1.0\nDesigned for interactive command input and output.';
+          break;
+        case 'time':
+          const now = new Date();
+          output = `Current time: ${now.toLocaleTimeString()}`;
+          break;
+        case 'date':
+          const today = new Date();
+          output = `Today's date: ${today.toLocaleDateString()}`;
           break;
         default:
           output = `Unknown command: "${command}"\nType "help" for a list of commands.`;
@@ -184,6 +226,22 @@
         terminalInput.value = ''; // Clear input field
         appendToTerminal(`> ${command}`);
         handleCommand(command);
+
+        // Save command to history
+        commandHistory.push(command);
+        historyIndex = commandHistory.length;
+      } else if (e.key === 'ArrowUp') {
+        if (historyIndex > 0) {
+          historyIndex--;
+          terminalInput.value = commandHistory[historyIndex];
+        }
+      } else if (e.key === 'ArrowDown') {
+        if (historyIndex < commandHistory.length - 1) {
+          historyIndex++;
+          terminalInput.value = commandHistory[historyIndex];
+        } else {
+          terminalInput.value = '';
+        }
       }
     });
   </script>
