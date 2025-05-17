@@ -4,13 +4,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Unlock FLVR404</title>
+  <title>Terminal Breach</title>
   <style>
     /* Root variables for consistent theming */
     :root {
       --primary-color: #00ffcc;
       --text-color: #ffffff;
-      --background-opacity: rgba(0, 0, 0, 0.50);
+      --background-opacity: rgba(0, 0, 0, 0.85);
       --terminal-width: 600px;
       --terminal-height: 400px;
       --terminal-padding: 20px;
@@ -56,7 +56,7 @@
       border: 2px solid var(--primary-color);
       border-radius: 10px;
       background: var(--background-opacity);
-      box-shadow: 0 0 20px var(--primary-color), inset 0 0 8px rgba(0,255,200,0.2);
+      box-shadow: 0 0 20px var(--primary-color);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -119,7 +119,7 @@
   </video>
 
   <!-- Background sound -->
-  <audio autoplay loop id="bg-audio">
+  <audio id="bg-audio" loop>
     <source src="assets/audio/unlock-bg.mp3" type="audio/mpeg" />
     Your browser does not support the audio tag.
   </audio>
@@ -137,6 +137,16 @@
     // DOM References
     const terminalOutput = document.getElementById('terminal-output');
     const terminalInput = document.getElementById('terminal-input');
+    const bgAudio = document.getElementById('bg-audio');
+
+    // Enable audio playback after user interaction
+    const enableAudio = () => {
+      bgAudio.play().catch(err => console.error('Audio playback failed:', err));
+      document.body.removeEventListener('click', enableAudio);
+    };
+
+    // Add event listener for user interaction
+    document.body.addEventListener('click', enableAudio);
 
     // Command handler
     const handleCommand = (command) => {
@@ -162,12 +172,10 @@
     };
 
     // Append text to the terminal output
-    function appendToTerminal(text) {
-      const line = document.createElement('div');
-      line.textContent = text;
-      terminalOutput.appendChild(line);
-      terminalOutput.scrollTop = terminalOutput.scrollHeight;
-};
+    const appendToTerminal = (text) => {
+      terminalOutput.innerHTML += `\n${text}`;
+      terminalOutput.scrollTop = terminalOutput.scrollHeight; // Scroll to the bottom
+    };
 
     // Event listener for the input
     terminalInput.addEventListener('keydown', (e) => {
