@@ -162,11 +162,12 @@
     };
 
     // Append text to the terminal output
-    const line = document.createElement('div');
+    function appendToTerminal(text) {
+      const line = document.createElement('div');
       line.textContent = text;
       terminalOutput.appendChild(line);
-      terminalOutput.scrollTop = terminalOutput.scrollHeight; // Scroll to the bottom
-    };
+      terminalOutput.scrollTop = terminalOutput.scrollHeight;
+};
 
     // Event listener for the input
     terminalInput.addEventListener('keydown', (e) => {
