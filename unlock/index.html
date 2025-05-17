@@ -124,7 +124,8 @@
     const terminalInput = document.getElementById("terminal-input");
     const bgAudio = document.getElementById("bg-audio");
 
-    let unlocked = false; // Tracking unlock status
+    let unlocked = false; // Status for unlock
+    let logs = []; // Stored logs for "log" feature
 
     // Enable audio playback after user interaction
     const enableAudio = () => {
@@ -145,7 +146,7 @@
     function processCommand(command) {
       switch (command) {
         case "help":
-          appendOutput("Commands:\n- unlock\n- hint\n- log");
+          appendOutput("Commands:\n- unlock\n- hint\n- log\n- decrypt\n- xp\n- download\n- theme [glitch|fire]\n- login\n- 404\n- redeem\n- clear");
           break;
         case "unlock":
           handleUnlock();
@@ -155,6 +156,37 @@
           break;
         case "log":
           handleLog();
+          break;
+        case "decrypt":
+          appendOutput("Decrypt feature coming soon!");
+          break;
+        case "xp":
+          appendOutput("XP feature coming soon!");
+          break;
+        case "download":
+          appendOutput("Download feature coming soon!");
+          break;
+        case "theme glitch":
+          document.documentElement.style.setProperty("--primary-color", "var(--theme-glitch)");
+          appendOutput("Theme changed to Glitch.");
+          break;
+        case "theme fire":
+          document.documentElement.style.setProperty("--primary-color", "var(--theme-fire)");
+          appendOutput("Theme changed to Fire.");
+          break;
+        case "login":
+          appendOutput("Login feature coming soon!");
+          break;
+        case "404":
+          appendOutput("SYSTEM CRASH INITIATED! ⚠️ Glitch overload...");
+          document.body.style.backgroundColor = "red";
+          setTimeout(() => document.body.style.backgroundColor = "black", 1000);
+          break;
+        case "redeem":
+          appendOutput("Redeem feature coming soon!");
+          break;
+        case "clear":
+          terminalOutput.innerHTML = ""; // Clear all terminal output
           break;
         default:
           appendOutput(`Unknown command: "${command}". Type "help" for a list of commands.`);
@@ -190,15 +222,20 @@
 
     // Feature: Log
     function handleLog() {
+      const newLog = `[LOG] ${generateRandomLog()}`;
+      logs.push(newLog);
+      appendOutput(newLog);
+    }
+
+    function generateRandomLog() {
       const logs = [
-        "[LOG] User connected...",
-        "[LOG] Unauthorized access detected!",
-        "[LOG] Attempting to bypass firewall...",
-        "[LOG] Data packet sent to 192.168.1.1...",
-        "[LOG] ALERT! Possible breach."
+        "User connected...",
+        "Unauthorized access detected!",
+        "Attempting to bypass firewall...",
+        "Data packet sent to 192.168.1.1...",
+        "ALERT! Possible breach."
       ];
-      const randomLog = logs[Math.floor(Math.random() * logs.length)];
-      appendOutput(randomLog);
+      return logs[Math.floor(Math.random() * logs.length)];
     }
   </script>
 </body>
