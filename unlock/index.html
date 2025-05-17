@@ -33,18 +33,6 @@
       overflow: hidden;
     }
 
-    #bg-video {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      z-index: -2;
-      filter: blur(2px) contrast(120%);
-      opacity: 0.25;
-    }
-
     .terminal {
       width: var(--terminal-width);
       height: var(--terminal-height);
@@ -99,18 +87,6 @@
 </head>
 
 <body>
-  <!-- Background video -->
-  <video autoplay muted loop playsinline id="bg-video">
-    <source src="assets/video/unlock-bg-small.mp4" type="video/mp4" />
-    Your browser does not support the video tag.
-  </video>
-
-  <!-- Background sound -->
-  <audio id="bg-audio" loop>
-    <source src="assets/audio/unlock-bg.mp3" type="audio/mpeg" />
-    Your browser does not support the audio tag.
-  </audio>
-
   <div class="terminal">
     <div class="terminal-header">Terminal Breach</div>
     <div class="terminal-output" id="terminal-output">Welcome to the Terminal Breach.\nType "help" to view commands.</div>
@@ -122,18 +98,10 @@
   <script>
     const terminalOutput = document.getElementById("terminal-output");
     const terminalInput = document.getElementById("terminal-input");
-    const bgAudio = document.getElementById("bg-audio");
 
-    let unlocked = false; // Status for unlock
-    let logs = []; // Stored logs for "log" feature
-
-    // Enable audio playback after user interaction
-    const enableAudio = () => {
-      bgAudio.play().catch(err => console.error("Audio playback failed:", err));
-      document.body.removeEventListener("click", enableAudio);
-    };
-
-    document.body.addEventListener("click", enableAudio);
+    let isUnlocked = false; // State to track if unlock is active
+    let userXP = 0; // Track XP
+    let userLevel = 1; // Track Level
 
     terminalInput.addEventListener("keydown", (e) => {
       if (e.key === "Enter") {
@@ -146,25 +114,24 @@
     function processCommand(command) {
       switch (command) {
         case "help":
-          appendOutput("Commands:\n- unlock\n- hint\n- log\n- decrypt\n- xp\n- download\n- theme [glitch|fire]\n- login\n- 404\n- redeem\n- clear");
+          appendOutput(
+            "Commands:\n- unlock\n- lock\n- decrypt\n- xp\n- download\n- theme [glitch|fire]\n- login\n- 404\n- redeem\n- clear"
+          );
           break;
         case "unlock":
           handleUnlock();
           break;
-        case "hint":
-          handleHint();
-          break;
-        case "log":
-          handleLog();
+        case "lock":
+          handleLock();
           break;
         case "decrypt":
-          appendOutput("Decrypt feature coming soon!");
+          handleDecrypt();
           break;
         case "xp":
-          appendOutput("XP feature coming soon!");
+          handleXP();
           break;
         case "download":
-          appendOutput("Download feature coming soon!");
+          handleDownload();
           break;
         case "theme glitch":
           document.documentElement.style.setProperty("--primary-color", "var(--theme-glitch)");
@@ -178,9 +145,7 @@
           appendOutput("Login feature coming soon!");
           break;
         case "404":
-          appendOutput("SYSTEM CRASH INITIATED! ⚠️ Glitch overload...");
-          document.body.style.backgroundColor = "red";
-          setTimeout(() => document.body.style.backgroundColor = "black", 1000);
+          handleError404();
           break;
         case "redeem":
           appendOutput("Redeem feature coming soon!");
@@ -198,44 +163,60 @@
       terminalOutput.scrollTop = terminalOutput.scrollHeight;
     }
 
-    // Feature: Unlock
-    function handleUnlock() {
-      if (unlocked) {
-        appendOutput("Access already unlocked! Navigate to: <a href='/DROP_01' target='_blank'>DROP_01</a>");
-      } else {
-        unlocked = true;
-        appendOutput("Access unlocked! Navigate to: <a href='/DROP_01' target='_blank'>DROP_01</a>");
+    async function simulateTyping(text, delay = 50) {
+      for (let char of text) {
+        appendOutput(char);
+        await new Promise((resolve) => setTimeout(resolve, delay));
       }
+      appendOutput(""); // Add a line break at the end
     }
 
-    // Feature: Hint
-    function handleHint() {
-      const hints = [
-        "Cek IG: @darksidegue untuk petunjuk lebih lanjut!",
-        "Cari kode tersembunyi di halaman utama.",
-        "Apakah Anda sudah melihat file README.md?",
-        "Perhatikan pola dalam log aktivitas..."
-      ];
-      const randomHint = hints[Math.floor(Math.random() * hints.length)];
-      appendOutput(randomHint);
+    // Handles the unlock command
+    async function handleUnlock() {
+      if (isUnlocked) {
+        appendOutput("Access already granted! Navigate to: <a href='/DROP_01' target='_blank'>DROP_01</a>");
+        return;
+      }
+
+      await simulateTyping("Verifying credentials...", 100); // Simulate typing effect
+      setTimeout(async () => {
+        isUnlocked = true; // Update unlock state
+        await simulateTyping("Access granted.", 100);
+        appendOutput("Navigate to: <a href='/DROP_01' target='_blank'>DROP_01</a>");
+      }, 2000); // Simulate delay for verification
     }
 
-    // Feature: Log
-    function handleLog() {
-      const newLog = `[LOG] ${generateRandomLog()}`;
-      logs.push(newLog);
-      appendOutput(newLog);
+    // Handles the lock command
+    function handleLock() {
+      if (!isUnlocked) {
+        appendOutput("Access is already locked.");
+        return;
+      }
+
+      isUnlocked = false; // Reset unlock state
+      appendOutput("Access has been revoked. Use 'unlock' to regain access.");
     }
 
-    function generateRandomLog() {
-      const logs = [
-        "User connected...",
-        "Unauthorized access detected!",
-        "Attempting to bypass firewall...",
-        "Data packet sent to 192.168.1.1...",
-        "ALERT! Possible breach."
-      ];
-      return logs[Math.floor(Math.random() * logs.length)];
+    // Handles the decrypt command
+    function handleDecrypt() {
+      appendOutput("Decrypt this: 01010011 01101100 01100001 01111001\n(Hint: Convert binary to text)");
+    }
+
+    // Handles the XP command
+    function handleXP() {
+      appendOutput(`XP: ${userXP}\nLevel: ${userLevel}\nBadges: 🧠 🔐`);
+    }
+
+    // Handles the download command
+    function handleDownload() {
+      appendOutput("Simulating download... File: glitch_data.zip");
+    }
+
+    // Handles the 404 command
+    function handleError404() {
+      appendOutput("SYSTEM CRASH INITIATED! ⚠️ Glitch overload...");
+      document.body.style.backgroundColor = "red";
+      setTimeout(() => document.body.style.backgroundColor = "black", 1000);
     }
   </script>
 </body>
