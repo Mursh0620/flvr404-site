@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Terminal Breach</title>
   <style>
-    /* Root variables for consistent theming */
     :root {
       --primary-color: #00ffcc;
       --text-color: #ffffff;
@@ -18,14 +17,14 @@
       --font-size-header: 1.5rem;
       --font-size-output: 0.9rem;
       --font-size-input: 1rem;
+      --theme-glitch: #ff00ff;
+      --theme-fire: #ff4500;
     }
 
-    /* Base styles */
     body {
       margin: 0;
-      padding: 0;
       font-family: 'Courier New', Courier, monospace;
-      background: black;
+      background-color: black;
       color: var(--text-color);
       display: flex;
       justify-content: center;
@@ -34,22 +33,7 @@
       overflow: hidden;
     }
 
-    /* Background video styling */
-    #bg-video {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      z-index: -2;
-      filter: blur(2px) contrast(120%);
-      opacity: 0.25;
-    }
-
-    /* Terminal container styling */
     .terminal {
-      position: relative;
       width: var(--terminal-width);
       height: var(--terminal-height);
       padding: var(--terminal-padding);
@@ -62,42 +46,33 @@
       justify-content: space-between;
     }
 
-    /* Terminal header styling */
     .terminal-header {
       font-size: var(--font-size-header);
-      font-weight: bold;
-      color: var(--primary-color);
       text-align: center;
-      margin-bottom: 10px;
+      color: var(--primary-color);
     }
 
-    /* Terminal output area */
     .terminal-output {
       flex: 1;
       overflow-y: auto;
-      padding: 10px;
       background: black;
+      padding: 10px;
       border: 2px solid var(--primary-color);
       border-radius: 5px;
-      color: var(--text-color);
+      margin-bottom: 10px;
       font-size: var(--font-size-output);
       white-space: pre-wrap;
-      margin-bottom: 10px;
     }
 
-    /* Command input container */
     .terminal-input-container {
       display: flex;
-      justify-content: center;
       align-items: center;
       padding: 5px;
       background: black;
-      border: 2px solid var(--primary-color);
       border-radius: 5px;
       box-shadow: 0 0 10px var(--primary-color);
     }
 
-    /* Command input styling */
     .terminal-input {
       width: 100%;
       height: var(--input-height);
@@ -109,141 +84,94 @@
       outline: none;
     }
 
-    /* Fullscreen button */
-    .fullscreen-btn {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      padding: 10px 15px;
-      font-size: 0.9rem;
-      background: var(--primary-color);
-      color: black;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    .fullscreen-btn:hover {
-      background: #00e6b3;
+    .badge {
+      font-size: 1.2rem;
+      margin-right: 5px;
     }
   </style>
 </head>
 
 <body>
-  <!-- Background video -->
-  <video autoplay muted loop playsinline id="bg-video">
-    <source src="assets/video/unlock-bg-small.mp4" type="video/mp4" />
-    Your browser does not support the video tag.
-  </video>
-
-  <!-- Background sound -->
-  <audio id="bg-audio" loop>
-    <source src="assets/audio/unlock-bg.mp3" type="audio/mpeg" />
-    Your browser does not support the audio tag.
-  </audio>
-
-  <!-- Terminal container -->
   <div class="terminal">
-    <div class="terminal-header">FLVR404 Terminal</div>
-    <div class="terminal-output" id="terminal-output">Welcome to the FLVR404 Terminal.\nType "help" for a list of commands.</div>
+    <div class="terminal-header">Terminal Breach</div>
+    <div class="terminal-output" id="terminal-output">Welcome to the Terminal Breach.\nType "help" to view commands.</div>
     <div class="terminal-input-container">
-      <input type="text" class="terminal-input" id="terminal-input" placeholder="Type a command..." autofocus>
+      <input type="text" id="terminal-input" class="terminal-input" placeholder="Type a command..." autofocus />
     </div>
-    <button class="fullscreen-btn" id="fullscreen-btn">Fullscreen</button>
   </div>
 
   <script>
-    // DOM References
-    const terminalOutput = document.getElementById('terminal-output');
-    const terminalInput = document.getElementById('terminal-input');
-    const bgAudio = document.getElementById('bg-audio');
-    const fullscreenBtn = document.getElementById('fullscreen-btn');
+    const terminalOutput = document.getElementById("terminal-output");
+    const terminalInput = document.getElementById("terminal-input");
 
-    // Enable audio playback after user interaction
-    const enableAudio = () => {
-      bgAudio.play().catch(err => console.error('Audio playback failed:', err));
-      document.body.removeEventListener('click', enableAudio);
-    };
+    let userXP = 0;
+    let userLevel = 1;
+    let unlocked = false;
 
-    // Add event listener for user interaction
-    document.body.addEventListener('click', enableAudio);
-
-    // Command history
-    let commandHistory = [];
-    let historyIndex = -1;
-
-    // Fullscreen toggle
-    const toggleFullscreen = () => {
-      if (!document.fullscreenElement) {
-        document.documentElement.requestFullscreen();
-      } else {
-        document.exitFullscreen();
-      }
-    };
-    fullscreenBtn.addEventListener('click', toggleFullscreen);
-
-    // Command handler
-    const handleCommand = (command) => {
-      command = command.trim().toLowerCase();
-      let output = '';
-
-      switch (command) {
-        case 'help':
-          output = 'Available commands:\n- help: Show this help menu\n- clear: Clear the terminal\n- about: Learn about FLVR404 Terminal\n- time: Show the current time\n- date: Show today\'s date';
-          break;
-        case 'clear':
-          terminalOutput.innerHTML = ''; // Clears the terminal output
-          return;
-        case 'about':
-          output = 'FLVR404 Terminal v1.0\nDesigned for interactive command input and output.';
-          break;
-        case 'time':
-          const now = new Date();
-          output = `Current time: ${now.toLocaleTimeString()}`;
-          break;
-        case 'date':
-          const today = new Date();
-          output = `Today's date: ${today.toLocaleDateString()}`;
-          break;
-        default:
-          output = `Unknown command: "${command}"\nType "help" for a list of commands.`;
-      }
-
-      // Add the output to the terminal
-      appendToTerminal(output);
-    };
-
-    // Append text to the terminal output
-    const appendToTerminal = (text) => {
-      terminalOutput.innerHTML += `\n${text}`;
-      terminalOutput.scrollTop = terminalOutput.scrollHeight; // Scroll to the bottom
-    };
-
-    // Event listener for the input
-    terminalInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        const command = terminalInput.value;
-        terminalInput.value = ''; // Clear input field
-        appendToTerminal(`> ${command}`);
-        handleCommand(command);
-
-        // Save command to history
-        commandHistory.push(command);
-        historyIndex = commandHistory.length;
-      } else if (e.key === 'ArrowUp') {
-        if (historyIndex > 0) {
-          historyIndex--;
-          terminalInput.value = commandHistory[historyIndex];
-        }
-      } else if (e.key === 'ArrowDown') {
-        if (historyIndex < commandHistory.length - 1) {
-          historyIndex++;
-          terminalInput.value = commandHistory[historyIndex];
-        } else {
-          terminalInput.value = '';
-        }
+    terminalInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        const command = terminalInput.value.trim().toLowerCase();
+        terminalInput.value = "";
+        processCommand(command);
       }
     });
+
+    function processCommand(command) {
+      switch (command) {
+        case "help":
+          appendOutput("Commands:\n- unlock\n- hint\n- decrypt\n- log\n- xp\n- download\n- theme [glitch|fire]\n- login\n- 404\n- redeem");
+          break;
+        case "unlock":
+          if (unlocked) {
+            appendOutput("Access already unlocked! Navigate to DROP_01.");
+          } else {
+            unlocked = true;
+            appendOutput("Access unlocked! Navigate to DROP_01.");
+          }
+          break;
+        case "hint":
+          appendOutput("Follow the clues on IG: @darksidegue");
+          break;
+        case "decrypt":
+          appendOutput("Decrypt this: 01010100 01100101 01110011 01110100");
+          break;
+        case "log":
+          appendOutput("[LOG] User connected...\n[LOG] System breach detected!\n[LOG] Glitchy log entry...");
+          break;
+        case "xp":
+          appendOutput(`XP: ${userXP}\nLevel: ${userLevel}\nBadges: 🧠 🔐`);
+          break;
+        case "download":
+          appendOutput("Simulating download... File: glitch_data.zip");
+          break;
+        case "theme glitch":
+          document.documentElement.style.setProperty("--primary-color", "var(--theme-glitch)");
+          appendOutput("Theme changed to Glitch.");
+          break;
+        case "theme fire":
+          document.documentElement.style.setProperty("--primary-color", "var(--theme-fire)");
+          appendOutput("Theme changed to Fire.");
+          break;
+        case "login":
+          appendOutput("Enter your username: agent404");
+          break;
+        case "404":
+          appendOutput("SYSTEM CRASH INITIATED! ⚠️ Glitch overload...");
+          document.body.style.backgroundColor = "red";
+          setTimeout(() => document.body.style.backgroundColor = "black", 1000);
+          break;
+        case "redeem":
+          appendOutput("Enter your redeem code:");
+          break;
+        default:
+          appendOutput(`Unknown command: "${command}". Type "help" for a list of commands.`);
+      }
+    }
+
+    function appendOutput(text) {
+      terminalOutput.innerHTML += `\n${text}`;
+      terminalOutput.scrollTop = terminalOutput.scrollHeight;
+    }
   </script>
 </body>
 
