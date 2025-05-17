@@ -14,9 +14,8 @@
       --terminal-width: 600px;
       --terminal-height: 400px;
       --terminal-padding: 20px;
-      --input-height: 40px;
+      --input-height: 50px;
       --font-size-header: 1.5rem;
-      --font-size-instructions: 1rem;
       --font-size-output: 0.9rem;
       --font-size-input: 1rem;
     }
@@ -69,6 +68,7 @@
       font-weight: bold;
       color: var(--primary-color);
       text-align: center;
+      margin-bottom: 10px;
     }
 
     /* Terminal output area */
@@ -79,10 +79,22 @@
       background: black;
       border: 2px solid var(--primary-color);
       border-radius: 5px;
-      margin-bottom: 15px;
       color: var(--text-color);
       font-size: var(--font-size-output);
       white-space: pre-wrap;
+      margin-bottom: 10px;
+    }
+
+    /* Command input container */
+    .terminal-input-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 5px;
+      background: black;
+      border: 2px solid var(--primary-color);
+      border-radius: 5px;
+      box-shadow: 0 0 10px var(--primary-color);
     }
 
     /* Command input styling */
@@ -91,17 +103,10 @@
       height: var(--input-height);
       padding: 0 15px;
       font-size: var(--font-size-input);
-      border: 2px solid var(--primary-color);
-      background: black;
+      border: none;
+      background: transparent;
       color: var(--text-color);
-      border-radius: 5px;
       outline: none;
-      box-shadow: 0 0 5px var(--primary-color);
-      transition: box-shadow 0.3s ease;
-    }
-
-    .terminal-input:focus {
-      box-shadow: 0 0 15px var(--primary-color);
     }
   </style>
 </head>
@@ -117,7 +122,9 @@
   <div class="terminal">
     <div class="terminal-header">FLVR404 Terminal</div>
     <div class="terminal-output" id="terminal-output">Welcome to the FLVR404 Terminal.\nType "help" for a list of commands.</div>
-    <input type="text" class="terminal-input" id="terminal-input" placeholder="Type a command...">
+    <div class="terminal-input-container">
+      <input type="text" class="terminal-input" id="terminal-input" placeholder="Type a command..." autofocus>
+    </div>
   </div>
 
   <script>
