@@ -152,7 +152,7 @@
     function processCommand(command) {
       switch (command) {
         case "help":
-          appendOutput("Commands:\n- unlock\n- hint\n- decrypt\n- log\n- xp\n- download\n- theme [glitch|fire]\n- login\n- 404\n- redeem");
+          appendOutput("Commands:\n- unlock\n- hint\n- decrypt\n- log\n- xp\n- download\n- theme [glitch|fire]\n- login\n- 404\n- redeem\n- clear");
           break;
         case "unlock":
           if (unlocked) {
@@ -161,6 +161,9 @@
             unlocked = true;
             appendOutput("Access unlocked! Navigate to DROP_01.");
           }
+          break;
+        case "clear":
+          clearOutput();
           break;
         case "hint":
           appendOutput("Follow the clues on IG: @darksidegue");
@@ -204,6 +207,10 @@
     function appendOutput(text) {
       terminalOutput.innerHTML += `\n${text}`;
       terminalOutput.scrollTop = terminalOutput.scrollHeight;
+    }
+
+    function clearOutput() {
+      terminalOutput.innerHTML = ""; // Clear all terminal output
     }
   </script>
 </body>
