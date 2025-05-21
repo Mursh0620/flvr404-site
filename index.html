@@ -1,226 +1,197 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Terminal Breach</title>
-  <style>
-    :root {
-      --primary-color: #00ffcc;
-      --text-color: #ffffff;
-      --background-opacity: rgba(0, 0, 0, 0.3);
-      --terminal-width: 600px;
-      --terminal-height: 400px;
-      --terminal-padding: 20px;
-      --input-height: 50px;
-      --font-size-header: 1.5rem;
-      --font-size-output: 0.9rem;
-      --font-size-input: 1rem;
-      --theme-glitch: #ee00ee;
-      --theme-fire: #cc0000;
-    }
+  <!-- favicon -->
+<!-- Modern -->
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<!-- Legacy -->
+<link rel="icon" type="image/x-icon" href="assets/favicon.ico">
 
+  <meta charset="UTF-8" />
+  <title>FLAVOUR NOT FOUND</title>
+  <style>
     body {
-      margin: 0;
-      font-family: 'Courier New', Courier, monospace;
       background-color: black;
-      color: var(--text-color);
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      color: #00ff99;
+      font-family: monospace;
+      margin: 0;
       height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       overflow: hidden;
     }
 
+    /* BACKGROUND VIDEO */
     #bg-video {
       position: fixed;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 100%;
+      width: 100vw;
+      height: 100vh;
       object-fit: cover;
-      z-index: -2;
-      filter: blur(2px) contrast(120%);
-      opacity: 0.25;
+      z-index: -1;
+      filter: brightness(0.4) contrast(1.2);
     }
 
-    #intro-screen {
+    body::after {
+      content: '';
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: black;
-      z-index: 9999;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      font-family: 'Courier New', Courier, monospace;
-      color: #00ffcc;
-      font-size: 1rem;
-      transition: opacity 0.5s ease;
-      overflow: hidden;
+      background-image: repeating-linear-gradient(
+        to bottom, rgba(0,255,153,0.03), rgba(0,255,153,0.03) 1px, transparent 2px
+      );
+      pointer-events: none;
+      z-index: 1;
     }
 
-    #boot-text {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-    }
-
-    .glitch-line {
-      position: relative;
-      display: block;
-      animation: glitch-color 2s infinite;
-      line-height: 1.4;
-    }
-
-    @keyframes glitch {
-      0% { transform: translate(0); opacity: 1; }
-      20% { transform: translate(-1px, 1px); }
-      40% { transform: translate(2px, -1px); opacity: 0.9; }
-      60% { transform: translate(-2px, 2px); }
-      80% { transform: translate(1px, -1px); opacity: 0.95; }
-      100% { transform: translate(0); opacity: 1; }
-    }
-
-    @keyframes glitch-color {
-      0%   { color: #00ffcc; }
-      25%  { color: #ff00ff; }
-      50%  { color: #00ffff; }
-      75%  { color: #ff3300; }
-      100% { color: #00ffcc; }
-    }
-
-    .terminal {
-      width: var(--terminal-width);
-      height: var(--terminal-height);
-      padding: var(--terminal-padding);
-      border: 2px solid var(--primary-color);
-      border-radius: 10px;
-      background: var(--background-opacity);
-      backdrop-filter: blur(3px);
-      box-shadow: 0 0 20px var(--primary-color);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .terminal-header {
-      font-size: var(--font-size-header);
+    .frame {
+      border: 1px solid #00ff99;
+      padding: 40px 30px;
+      box-shadow: 0 0 20px #00ff99aa;
+      background-color: #000000b3;
       text-align: center;
-      color: var(--primary-color);
+      width: 90%;
+      max-width: 420px;
+      position: relative;
+      z-index: 2;
     }
 
-    .terminal-output {
-      flex: 1;
-      overflow-y: auto;
-      background: transparent;
-      padding: 15px;
-      border: 2px solid var(--primary-color);
-      border-radius: 5px;
-      margin-bottom: 10px;
-      font-size: var(--font-size-output);
-      white-space: pre-wrap;
-      color: var(--text-color);
+    .glitch-logo-wrapper {
+      position: relative;
+      width: 150px;
+      margin: 0 auto 20px;
     }
 
-    .terminal-output div {
-      margin-bottom: 5px;
-    }
-
-    .terminal-input-container {
-      display: flex;
-      align-items: center;
-      padding: 5px;
-      background: rgba(0, 0, 0, 0.4);
-      border-radius: 5px;
-      box-shadow: 0 0 10px var(--primary-color);
-    }
-
-    .terminal-input {
+    .glitch-logo {
       width: 100%;
-      height: var(--input-height);
-      padding: 0 15px;
-      font-size: var(--font-size-input);
-      border: none;
-      background: transparent;
-      color: var(--text-color);
-      outline: none;
+      display: block;
     }
 
-    @media (max-width: 768px) {
-      :root {
-        --terminal-width: 90%;
-        --terminal-height: 300px;
-      }
+    .glitch-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      animation: glitch-rgb 1s infinite;
+      opacity: 0.7;
+      mix-blend-mode: screen;
+    }
+
+    @keyframes glitch-rgb {
+      0%   { transform: translate(0);       filter: hue-rotate(0deg);    opacity: 0.2; }
+      25%  { transform: translate(-2px, 1px); filter: hue-rotate(90deg);   opacity: 0.4; }
+      50%  { transform: translate(2px, -1px); filter: hue-rotate(180deg);  opacity: 0.6; }
+      75%  { transform: translate(-1px, 2px); filter: hue-rotate(270deg);  opacity: 0.3; }
+      100% { transform: translate(0);       filter: hue-rotate(0deg);    opacity: 0.2; }
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+      animation: glitch-text 1s infinite;
+    }
+
+    @keyframes glitch-text {
+      0%   { text-shadow: 2px 0 red; }
+      50%  { text-shadow: -2px 0 blue; }
+      100% { text-shadow: 2px 0 red; }
+    }
+
+    .subtitle {
+      font-size: 0.75rem;
+      color: #00ff99;
+      opacity: 0.4;
+      margin-bottom: 30px;
+    }
+
+    .countdown {
+      font-size: 1.2rem;
+      margin-bottom: 40px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      font-family: inherit;
+      background: none;
+      color: #00ff99;
+      border: 1px solid #00ff99;
+      cursor: pointer;
+    }
+
+    .void-link {
+      position: fixed;
+      bottom: 6px;
+      right: 10px;
+      font-size: 10px;
+      color: #00ff99;
+      opacity: 0.08;
+      text-decoration: none;
+      transition: opacity 0.3s ease;
+      z-index: 3;
+    }
+
+    .void-link:hover {
+      opacity: 0.6;
     }
   </style>
 </head>
-
 <body>
-  <div id="intro-screen">
-    <div id="boot-text"></div>
-  </div>
-
+  <!-- VIDEO BACKGROUND -->
   <video autoplay muted loop playsinline id="bg-video">
-    <source src="assets/video/unlock-bg-small.mp4" type="video/mp4" />
-    Your browser does not support the video tag.
+    <source src="assets/video/flvr404-bg.mp4" type="video/mp4" />
   </video>
 
-  <audio id="bg-audio" loop>
-    <source src="assets/audio/unlock-bg.mp3" type="audio/mpeg" />
-    Your browser does not support the audio tag.
-  </audio>
+  <div class="frame">
+    <div class="glitch-logo-wrapper">
+      <img src="assets/flvr404-logo.png" class="glitch-logo" alt="FLVR404 Logo" />
+      <img src="assets/flvr404-logo.png" class="glitch-logo glitch-overlay" alt="FLVR404 Glitch Overlay" />
+    </div>
 
-  <div class="terminal">
-    <div class="terminal-header">Terminal Breach</div>
-    <div class="terminal-output" id="terminal-output">
-      Welcome to the Terminal Breach.<br>Type <strong>"help"</strong> to view available commands.
-    </div>
-    <div class="terminal-input-container">
-      <input type="text" id="terminal-input" class="terminal-input" placeholder="Type a command..." autofocus />
-    </div>
+    <h1>DROP_01 : SYSTEM BREACH</h1>
+    <div class="subtitle">TraceLog_01: Unauthorized public access granted.</div>
+    <div class="countdown" id="countdown">Loading timer...</div>
+    <button onclick="alert('Too early. This drop is encrypted.')">Access Drop</button>
   </div>
 
+  <a class="void-link" href="/void">ENTER VOID</a>
+
+  <!-- GLITCH AUDIO -->
+  <audio id="glitchAudio" autoplay loop hidden>
+    <source src="assets/audio/flvr404-bg-glitch.mp3" type="audio/mpeg" />
+  </audio>
+
   <script>
-    window.addEventListener("DOMContentLoaded", async () => {
-      const introScreen = document.getElementById("intro-screen");
-      const bootText = document.getElementById("boot-text");
+    const countdown = document.getElementById("countdown");
+    const targetDate = new Date("2025-06-01T00:00:00+07:00");
 
-      const lines = [
-        "[ FLVR404 SYSTEM INITIATED ]",
-        "> Decrypting memory...",
-        "> Establishing secure signal...",
-        "> Node synchronized.",
-        "> Welcome, outsider_404.",
-        "Boot sequence complete. Loading terminal..."
-      ];
-
-      for (let line of lines) {
-        await new Promise(resolve => setTimeout(resolve, 400));
-        const lineDiv = document.createElement("div");
-        lineDiv.classList.add("glitch-line");
-        bootText.appendChild(lineDiv);
-        for (let i = 0; i < line.length; i++) {
-          await new Promise(r => setTimeout(r, 20));
-          lineDiv.textContent += line[i];
-        }
+    function updateCountdown() {
+      const now = new Date();
+      const diff = targetDate - now;
+      if (diff <= 0) {
+        countdown.innerText = "Drop is Live.";
+      } else {
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((diff / (1000 * 60)) % 60);
+        const seconds = Math.floor((diff / 1000) % 60);
+        countdown.innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
       }
+    }
 
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      let opacity = 1;
-      const fadeOut = setInterval(() => {
-        opacity -= 0.05;
-        introScreen.style.opacity = opacity;
-        if (opacity <= 0) {
-          clearInterval(fadeOut);
-          introScreen.style.display = "none";
-        }
-      }, 50);
-    });
+    setInterval(updateCountdown, 1000);
+
+    // Trigger audio on first user interaction
+    window.addEventListener('click', () => {
+      const audio = document.getElementById('glitchAudio');
+      if (audio && audio.paused) {
+        audio.play().catch(e => console.log("Autoplay blocked:", e));
+      }
+    }, { once: true });
   </script>
 </body>
-
 </html>
