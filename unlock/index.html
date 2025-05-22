@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -20,7 +19,6 @@
       --theme-glitch: #ee00ee;
       --theme-fire: #cc0000;
     }
-
     body {
       margin: 0;
       font-family: 'Courier New', Courier, monospace;
@@ -32,7 +30,6 @@
       height: 100vh;
       overflow: hidden;
     }
-
     #bg-video {
       position: fixed;
       top: 0;
@@ -44,7 +41,6 @@
       filter: blur(2px) contrast(120%);
       opacity: 0.25;
     }
-
     #intro-screen {
       position: fixed;
       top: 0;
@@ -62,37 +58,24 @@
       transition: opacity 0.5s ease;
       overflow: hidden;
     }
-
     #boot-text {
       display: flex;
       flex-direction: column;
       align-items: flex-start;
     }
-
     .glitch-line {
       position: relative;
       display: block;
       animation: glitch-color 2s infinite;
       line-height: 1.4;
     }
-
-    @keyframes glitch {
-      0% { transform: translate(0); opacity: 1; }
-      20% { transform: translate(-1px, 1px); }
-      40% { transform: translate(2px, -1px); opacity: 0.9; }
-      60% { transform: translate(-2px, 2px); }
-      80% { transform: translate(1px, -1px); opacity: 0.95; }
-      100% { transform: translate(0); opacity: 1; }
-    }
-
     @keyframes glitch-color {
-      0%   { color: #00ffcc; }
-      25%  { color: #ff00ff; }
-      50%  { color: #00ffff; }
-      75%  { color: #ff3300; }
+      0% { color: #00ffcc; }
+      25% { color: #ff00ff; }
+      50% { color: #00ffff; }
+      75% { color: #ff3300; }
       100% { color: #00ffcc; }
     }
-
     .terminal {
       width: var(--terminal-width);
       height: var(--terminal-height);
@@ -106,13 +89,11 @@
       flex-direction: column;
       justify-content: space-between;
     }
-
     .terminal-header {
       font-size: var(--font-size-header);
       text-align: center;
       color: var(--primary-color);
     }
-
     .terminal-output {
       flex: 1;
       overflow-y: auto;
@@ -125,11 +106,9 @@
       white-space: pre-wrap;
       color: var(--text-color);
     }
-
     .terminal-output div {
       margin-bottom: 5px;
     }
-
     .terminal-input-container {
       display: flex;
       align-items: center;
@@ -138,7 +117,6 @@
       border-radius: 5px;
       box-shadow: 0 0 10px var(--primary-color);
     }
-
     .terminal-input {
       width: 100%;
       height: var(--input-height);
@@ -149,7 +127,6 @@
       color: var(--text-color);
       outline: none;
     }
-
     @media (max-width: 768px) {
       :root {
         --terminal-width: 90%;
@@ -158,69 +135,114 @@
     }
   </style>
 </head>
-
 <body>
   <div id="intro-screen">
     <div id="boot-text"></div>
   </div>
-
   <video autoplay muted loop playsinline id="bg-video">
     <source src="assets/video/unlock-bg-small.mp4" type="video/mp4" />
-    Your browser does not support the video tag.
   </video>
-
   <audio id="bg-audio" loop>
     <source src="assets/audio/unlock-bg.mp3" type="audio/mpeg" />
-    Your browser does not support the audio tag.
   </audio>
-
   <div class="terminal">
     <div class="terminal-header">Terminal Breach</div>
-    <div class="terminal-output" id="terminal-output">
-      Welcome to the Terminal Breach.<br>Type <strong>"help"</strong> to view available commands.
-    </div>
+    <div class="terminal-output" id="terminal-output"></div>
     <div class="terminal-input-container">
       <input type="text" id="terminal-input" class="terminal-input" placeholder="Type a command..." autofocus />
     </div>
   </div>
-
   <script>
+    const terminalInput = document.getElementById("terminal-input");
+    const terminalOutput = document.getElementById("terminal-output");
+    const bgAudio = document.getElementById("bg-audio");
+
+    const enableAudio = () => {
+      bgAudio.play().catch(() => {});
+      document.removeEventListener("click", enableAudio);
+    };
+    document.addEventListener("click", enableAudio);
+
+    function appendOutput(text) {
+      const line = document.createElement("div");
+      line.innerHTML = text;
+      terminalOutput.appendChild(line);
+      terminalOutput.scrollTop = terminalOutput.scrollHeight;
+    }
+
+    function handleCommand(command) {
+      switch (command) {
+        case "help":
+          appendOutput(`Commands:<br>- unlock<br>- lock<br>- decrypt<br>- xp<br>- download<br>- 404<br>- redeem<br>- login<br>- theme [glitch|fire|default]<br>- clear`);
+          break;
+        case "unlock":
+          appendOutput("🔓 Unlocking...");
+          break;
+        case "lock":
+          appendOutput("🔒 Terminal locked.");
+          break;
+        case "xp":
+          appendOutput("🧠 XP: 100<br>📶 Level: 2");
+          break;
+        case "clear":
+          terminalOutput.innerHTML = "";
+          break;
+        default:
+          appendOutput(`Unknown command: "${command}"`);
+      }
+    }
+
+    let debounce = false;
+    terminalInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && !debounce) {
+        debounce = true;
+        const command = terminalInput.value.trim().toLowerCase();
+        terminalInput.value = "";
+        appendOutput(`> ${command}`);
+        handleCommand(command);
+        setTimeout(() => debounce = false, 200);
+      }
+    });
+
     window.addEventListener("DOMContentLoaded", async () => {
       const introScreen = document.getElementById("intro-screen");
       const bootText = document.getElementById("boot-text");
-
       const lines = [
         "[ FLVR404 SYSTEM INITIATED ]",
         "> Decrypting memory...",
         "> Establishing secure signal...",
         "> Node synchronized.",
         "> Welcome, outsider_404.",
-        "Boot sequence complete. Loading terminal..."
+        "Boot sequence complete. Loading terminal...",
+        "Welcome to the Terminal Breach.<br>Type <strong>\"help\"</strong> to view available commands."
       ];
-
       for (let line of lines) {
         await new Promise(resolve => setTimeout(resolve, 400));
         const lineDiv = document.createElement("div");
         lineDiv.classList.add("glitch-line");
         bootText.appendChild(lineDiv);
+        let content = "";
         for (let i = 0; i < line.length; i++) {
           await new Promise(r => setTimeout(r, 20));
-          lineDiv.textContent += line[i];
+          content += line[i];
+          lineDiv.innerHTML = content;
         }
       }
-
       await new Promise(resolve => setTimeout(resolve, 1000));
       let opacity = 1;
-      const fadeOut = setInterval(() => {
+      const fade = () => {
         opacity -= 0.05;
         introScreen.style.opacity = opacity;
         if (opacity <= 0) {
-          clearInterval(fadeOut);
           introScreen.style.display = "none";
+          terminalInput.focus();
+          bgAudio.play().catch(() => {});
+        } else {
+          requestAnimationFrame(fade);
         }
-      }, 50);
+      };
+      requestAnimationFrame(fade);
     });
   </script>
 </body>
-
 </html>
