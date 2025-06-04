@@ -30,19 +30,31 @@ function setTheme(name) {
   }
 }
 
+let xp = parseInt(localStorage.getItem('xp') || '0');
+let locked = false;
+const history = [];
+let historyIndex = 0;
+
 function handleCommand(command) {
+  if (locked && command !== 'unlock') {
+    appendOutput('Terminal locked. Type "unlock" to continue.');
+    return;
+  }
+
   switch (command) {
     case 'help':
-      appendOutput('Commands:<br>- unlock<br>- lock<br>- xp<br>- theme glitch<br>- theme fire<br>- clear');
+      appendOutput('Commands:<br>- unlock<br>- lock<br>- xp<br>- theme glitch<br>- theme fire<br>- theme default<br>- clear');
       break;
     case 'unlock':
-      appendOutput('🔓 Unlocking...');
+      locked = false;
+      appendOutput('🔓 Access granted.');
       break;
     case 'lock':
+      locked = true;
       appendOutput('🔒 Terminal locked.');
       break;
     case 'xp':
-      appendOutput('🧠 XP: 100<br>📶 Level: 2');
+      appendOutput(`🧠 XP: ${xp}`);
       break;
     case 'theme glitch':
       setTheme('glitch');
@@ -52,20 +64,51 @@ function handleCommand(command) {
       setTheme('fire');
       appendOutput('Fire theme activated.');
       break;
+    case 'theme default':
+      setTheme('');
+      appendOutput('Default theme restored.');
+      break;
     case 'clear':
       terminalOutput.innerHTML = '';
       break;
     default:
       appendOutput(`Unknown command: "${command}"`);
   }
+
+  if (command !== 'xp') {
+    xp += 1;
+    localStorage.setItem('xp', xp);
+  }
 }
 
 let debounce = false;
 terminalInput.addEventListener('keydown', e => {
+  if (e.key === 'ArrowUp') {
+    if (historyIndex > 0) historyIndex--;
+    terminalInput.value = history[historyIndex] || '';
+    e.preventDefault();
+    return;
+  }
+  if (e.key === 'ArrowDown') {
+    if (historyIndex < history.length - 1) {
+      historyIndex++;
+      terminalInput.value = history[historyIndex];
+    } else {
+      historyIndex = history.length;
+      terminalInput.value = '';
+    }
+    e.preventDefault();
+    return;
+  }
+
   if (e.key === 'Enter' && !debounce) {
     debounce = true;
     const cmd = terminalInput.value.trim().toLowerCase();
     terminalInput.value = '';
+    if (cmd) {
+      history.push(cmd);
+      historyIndex = history.length;
+    }
     appendOutput(`> ${cmd}`);
     handleCommand(cmd);
     setTimeout(() => (debounce = false), 200);
