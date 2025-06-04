@@ -165,25 +165,12 @@
     <source src="assets/audio/flvr404-bg-glitch.mp3" type="audio/mpeg" />
   </audio>
 
+  <script src="assets/countdown.js"></script>
   <script>
     const countdown = document.getElementById("countdown");
     const targetDate = new Date("2025-06-01T00:00:00+07:00");
 
-    function updateCountdown() {
-      const now = new Date();
-      const diff = targetDate - now;
-      if (diff <= 0) {
-        countdown.innerText = "Drop is Live.";
-      } else {
-        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-        const minutes = Math.floor((diff / (1000 * 60)) % 60);
-        const seconds = Math.floor((diff / 1000) % 60);
-        countdown.innerText = `${days}d ${hours}h ${minutes}m ${seconds}s`;
-      }
-    }
-
-    setInterval(updateCountdown, 1000);
+    setInterval(() => updateCountdown(countdown, targetDate), 1000);
 
     // Trigger audio on first user interaction
     window.addEventListener('click', () => {
