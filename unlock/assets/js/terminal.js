@@ -1,0 +1,158 @@
+const terminalInput = document.getElementById('terminal-input');
+const terminalOutput = document.getElementById('terminal-output');
+const bgAudio = document.getElementById('bg-audio');
+
+function enableAudio() {
+  bgAudio.play().catch(() => {});
+  document.removeEventListener('click', enableAudio);
+}
+document.addEventListener('click', enableAudio);
+
+function appendOutput(text) {
+  const line = document.createElement('div');
+  line.innerHTML = text;
+  terminalOutput.appendChild(line);
+  terminalOutput.scrollTop = terminalOutput.scrollHeight;
+}
+
+function setTheme(name) {
+  const root = document.documentElement;
+  const getVar = v => getComputedStyle(root).getPropertyValue(v);
+  switch (name) {
+    case 'glitch':
+      root.style.setProperty('--primary-color', getVar('--theme-glitch'));
+      break;
+    case 'fire':
+      root.style.setProperty('--primary-color', getVar('--theme-fire'));
+      break;
+    default:
+      root.style.setProperty('--primary-color', '#00ffcc');
+  }
+}
+
+let xp = parseInt(localStorage.getItem('xp') || '0');
+let locked = false;
+const history = [];
+let historyIndex = 0;
+
+function handleCommand(command) {
+  if (locked && command !== 'unlock') {
+    appendOutput('Terminal locked. Type "unlock" to continue.');
+    return;
+  }
+
+  switch (command) {
+    case 'help':
+      appendOutput('Commands:<br>- unlock<br>- lock<br>- xp<br>- theme glitch<br>- theme fire<br>- theme default<br>- clear');
+      break;
+    case 'unlock':
+      locked = false;
+      appendOutput('🔓 Access granted.');
+      break;
+    case 'lock':
+      locked = true;
+      appendOutput('🔒 Terminal locked.');
+      break;
+    case 'xp':
+      appendOutput(`🧠 XP: ${xp}`);
+      break;
+    case 'theme glitch':
+      setTheme('glitch');
+      appendOutput('Glitch theme activated.');
+      break;
+    case 'theme fire':
+      setTheme('fire');
+      appendOutput('Fire theme activated.');
+      break;
+    case 'theme default':
+      setTheme('');
+      appendOutput('Default theme restored.');
+      break;
+    case 'clear':
+      terminalOutput.innerHTML = '';
+      break;
+    default:
+      appendOutput(`Unknown command: "${command}"`);
+  }
+
+  if (command !== 'xp') {
+    xp += 1;
+    localStorage.setItem('xp', xp);
+  }
+}
+
+let debounce = false;
+terminalInput.addEventListener('keydown', e => {
+  if (e.key === 'ArrowUp') {
+    if (historyIndex > 0) historyIndex--;
+    terminalInput.value = history[historyIndex] || '';
+    e.preventDefault();
+    return;
+  }
+  if (e.key === 'ArrowDown') {
+    if (historyIndex < history.length - 1) {
+      historyIndex++;
+      terminalInput.value = history[historyIndex];
+    } else {
+      historyIndex = history.length;
+      terminalInput.value = '';
+    }
+    e.preventDefault();
+    return;
+  }
+
+  if (e.key === 'Enter' && !debounce) {
+    debounce = true;
+    const cmd = terminalInput.value.trim().toLowerCase();
+    terminalInput.value = '';
+    if (cmd) {
+      history.push(cmd);
+      historyIndex = history.length;
+    }
+    appendOutput(`> ${cmd}`);
+    handleCommand(cmd);
+    setTimeout(() => (debounce = false), 200);
+  }
+});
+
+async function bootSequence() {
+  const introScreen = document.getElementById('intro-screen');
+  const bootText = document.getElementById('boot-text');
+  const lines = [
+    '[ FLVR404 SYSTEM INITIATED ]',
+    '> Decrypting memory...',
+    '> Establishing secure signal...',
+    '> Node synchronized.',
+    '> Welcome, outsider_404.',
+    'Boot sequence complete. Loading terminal...',
+    'Welcome to the Terminal Breach.<br>Type <strong>"help"</strong> to view available commands.'
+  ];
+  for (const line of lines) {
+    await new Promise(r => setTimeout(r, 400));
+    const div = document.createElement('div');
+    div.classList.add('glitch-line');
+    bootText.appendChild(div);
+    let content = '';
+    for (let i = 0; i < line.length; i++) {
+      await new Promise(r => setTimeout(r, 20));
+      content += line[i];
+      div.innerHTML = content;
+    }
+  }
+  await new Promise(r => setTimeout(r, 1000));
+  let opacity = 1;
+  const fade = () => {
+    opacity -= 0.05;
+    introScreen.style.opacity = opacity;
+    if (opacity <= 0) {
+      introScreen.style.display = 'none';
+      terminalInput.focus();
+      bgAudio.play().catch(() => {});
+    } else {
+      requestAnimationFrame(fade);
+    }
+  };
+  requestAnimationFrame(fade);
+}
+
+window.addEventListener('DOMContentLoaded', bootSequence);
